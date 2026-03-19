@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.healthappointment.controller.MainController">
+
+    <!-- Menu -->
+    <top>
+        <MenuBar>
+            <Menu text="Menu">
+                <MenuItem text="Add Appointment" onAction="#handleAdd"/>
+                <MenuItem text="Update Appointment" onAction="#handleUpdate"/>
+                <MenuItem text="Delete Appointment" onAction="#handleDelete"/>
+                <SeparatorMenuItem/>
+                <MenuItem text="Exit" onAction="#handleExit"/>
+            </Menu>
+        </MenuBar>
+    </top>
+
+    <!-- TableView -->
+    <center>
+        <TableView fx:id="tableView">
+            <columns>
+                <TableColumn fx:id="patientIdColumn" text="Patient ID" prefWidth="100"/>
+                <TableColumn fx:id="patientNameColumn" text="Patient Name" prefWidth="200"/>
+                <TableColumn fx:id="dateColumn" text="Date" prefWidth="120"/>
+                <TableColumn fx:id="timeColumn" text="Time" prefWidth="100"/>
+                <TableColumn fx:id="doctorColumn" text="Doctor" prefWidth="150"/>
+                <TableColumn fx:id="conditionColumn" text="Condition" prefWidth="150"/>
+            </columns>
+        </TableView>
+    </center>
+
+    <!-- Input Form -->
+    <bottom>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <GridPane hgap="10" vgap="10">
+                <!-- Patient ID -->
+                <Label text="Patient ID:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="patientIdField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <!-- Patient Name -->
+                <Label text="Patient Name:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="patientNameField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <!-- Date -->
+                <Label text="Date:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <DatePicker fx:id="datePicker" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <!-- Time -->
+                <Label text="Time:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <ChoiceBox fx:id="timeChoiceBox" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                <!-- Doctor -->
+                <Label text="Doctor:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <ChoiceBox fx:id="doctorChoiceBox" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                <!-- Health Condition -->
+                <Label text="Condition:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                <ChoiceBox fx:id="conditionChoiceBox" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <!-- Buttons -->
+            <HBox spacing="10">
+                <Button text="Add" onAction="#handleAdd"/>
+                <Button text="Update" onAction="#handleUpdate"/>
+                <Button text="Delete" onAction="#handleDelete"/>
+            </HBox>
+        </VBox>
+    </bottom>
+</BorderPane>
