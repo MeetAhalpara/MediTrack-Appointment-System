@@ -4,74 +4,92 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
+<!--
+    main-view.fxml  -  Dashboard Screen
+    Implements: Section 3 Screen 1, Use Cases 1-5
+    Accessibility: high-contrast labels, logical Tab order (Section 7)
+-->
 <BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.healthappointment.controller.MainController">
+            fx:controller="com.example.healthappointment.controller.MainController"
+            styleClass="root-pane">
 
-    <!-- Menu -->
+    <!-- ===== Top: MenuBar + Title + Search/Filter bar ==================== -->
     <top>
-        <MenuBar>
-            <Menu text="Menu">
-                <MenuItem text="Add Appointment" onAction="#handleAdd"/>
-                <MenuItem text="Update Appointment" onAction="#handleUpdate"/>
-                <MenuItem text="Delete Appointment" onAction="#handleDelete"/>
-                <SeparatorMenuItem/>
-                <MenuItem text="Exit" onAction="#handleExit"/>
-            </Menu>
-        </MenuBar>
+        <VBox>
+
+            <!-- Menu Bar -->
+            <MenuBar styleClass="menu-bar">
+                <Menu text="File">
+                    <MenuItem text="Exit" onAction="#handleExit"/>
+                </Menu>
+                <Menu text="Appointments">
+                    <MenuItem text="Add Appointment"    onAction="#handleAdd"/>
+                    <MenuItem text="Edit Appointment"   onAction="#handleUpdate"/>
+                    <MenuItem text="Delete Appointment" onAction="#handleDelete"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="View Details"       onAction="#handleViewDetails"/>
+                </Menu>
+            </MenuBar>
+
+            <!-- App Title Bar -->
+            <HBox styleClass="title-bar" alignment="CENTER_LEFT">
+                <padding><Insets top="10" right="16" bottom="10" left="16"/></padding>
+                <Label text="Health Appointment Manager" styleClass="app-title"/>
+            </HBox>
+
+            <!-- Search + Filter bar (Proposal Section 9) -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="filter-bar">
+                <padding><Insets top="8" right="16" bottom="8" left="16"/></padding>
+
+                <Label text="Search:" styleClass="filter-label"/>
+                <TextField fx:id="searchField"
+                           promptText="Patient name or doctor..."
+                           prefWidth="220"
+                           styleClass="search-field"/>
+
+                <Separator orientation="VERTICAL"/>
+
+                <Label text="Date:" styleClass="filter-label"/>
+                <DatePicker fx:id="filterDate" prefWidth="150"/>
+
+                <Label text="Status:" styleClass="filter-label"/>
+                <ComboBox fx:id="filterStatus" prefWidth="130"/>
+
+                <Button text="Apply Filter" onAction="#handleFilter"      styleClass="btn-primary"/>
+                <Button text="Clear"        onAction="#handleClearFilter" styleClass="btn-secondary"/>
+            </HBox>
+
+        </VBox>
     </top>
 
-    <!-- TableView -->
+    <!-- ===== Centre: Appointment TableView ================================ -->
     <center>
-        <TableView fx:id="tableView">
+        <TableView fx:id="tableView" styleClass="appointment-table">
             <columns>
-                <TableColumn fx:id="patientIdColumn" text="Patient ID" prefWidth="100"/>
-                <TableColumn fx:id="patientNameColumn" text="Patient Name" prefWidth="200"/>
-                <TableColumn fx:id="dateColumn" text="Date" prefWidth="120"/>
-                <TableColumn fx:id="timeColumn" text="Time" prefWidth="100"/>
-                <TableColumn fx:id="doctorColumn" text="Doctor" prefWidth="150"/>
-                <TableColumn fx:id="conditionColumn" text="Condition" prefWidth="150"/>
+                <TableColumn fx:id="colId"          text="Appt. ID"     prefWidth="70"/>
+                <TableColumn fx:id="colPatientName" text="Patient Name"  prefWidth="170"/>
+                <TableColumn fx:id="colPhone"       text="Phone"         prefWidth="140"/>
+                <TableColumn fx:id="colDate"        text="Date"          prefWidth="110"/>
+                <TableColumn fx:id="colTime"        text="Time"          prefWidth="100"/>
+                <TableColumn fx:id="colDoctor"      text="Doctor"        prefWidth="130"/>
+                <TableColumn fx:id="colReason"      text="Reason"        prefWidth="140"/>
+                <TableColumn fx:id="colStatus"      text="Status"        prefWidth="100"/>
             </columns>
+            <placeholder>
+                <Label text="No appointments found. Click Add Appointment to get started."/>
+            </placeholder>
         </TableView>
     </center>
 
-    <!-- Input Form -->
+    <!-- ===== Bottom: Action buttons ======================================= -->
     <bottom>
-        <VBox spacing="10">
-            <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
-            <GridPane hgap="10" vgap="10">
-                <!-- Patient ID -->
-                <Label text="Patient ID:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                <TextField fx:id="patientIdField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-
-                <!-- Patient Name -->
-                <Label text="Patient Name:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                <TextField fx:id="patientNameField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-
-                <!-- Date -->
-                <Label text="Date:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                <DatePicker fx:id="datePicker" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-
-                <!-- Time -->
-                <Label text="Time:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                <ChoiceBox fx:id="timeChoiceBox" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-
-                <!-- Doctor -->
-                <Label text="Doctor:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-                <ChoiceBox fx:id="doctorChoiceBox" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-
-                <!-- Health Condition -->
-                <Label text="Condition:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-                <ChoiceBox fx:id="conditionChoiceBox" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
-            </GridPane>
-
-            <!-- Buttons -->
-            <HBox spacing="10">
-                <Button text="Add" onAction="#handleAdd"/>
-                <Button text="Update" onAction="#handleUpdate"/>
-                <Button text="Delete" onAction="#handleDelete"/>
-            </HBox>
-        </VBox>
+        <HBox spacing="12" alignment="CENTER" styleClass="action-bar">
+            <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
+            <Button text="Add Appointment"  onAction="#handleAdd"         styleClass="btn-primary"   prefWidth="145"/>
+            <Button text="Edit Appointment" onAction="#handleUpdate"      styleClass="btn-secondary" prefWidth="145"/>
+            <Button text="Delete"           onAction="#handleDelete"      styleClass="btn-danger"    prefWidth="110"/>
+            <Button text="View Details"     onAction="#handleViewDetails" styleClass="btn-info"      prefWidth="120"/>
+        </HBox>
     </bottom>
+
 </BorderPane>
