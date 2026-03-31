@@ -1,220 +1,88 @@
-/* ================= ROOT ================= */
-.root-pane {
-    -fx-background-color: linear-gradient(to bottom, #eef2f7, #e4ebf5);
-    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-    -fx-font-size: 13px;
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: #f4f6f9;
 }
 
-/* ================= TITLE BAR ================= */
-.title-bar {
-    -fx-background-color: linear-gradient(to right, #1877F2, #145DBF);
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0.3, 0, 2);
+/* SIDEBAR */
+.sidebar {
+    -fx-background-color: #1e293b;
+    -fx-pref-width: 220;
 }
 
-.app-title {
+.logo {
     -fx-text-fill: white;
     -fx-font-size: 20px;
     -fx-font-weight: bold;
 }
 
-/* ================= MENU ================= */
-.menu-bar {
-    -fx-background-color: #1c1e21;
+/* NAV BUTTONS */
+.nav-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #cbd5e1;
+    -fx-font-size: 14px;
+    -fx-alignment: CENTER_LEFT;
 }
 
-.menu-bar .label {
-    -fx-text-fill: #e4e6eb;
+.nav-btn:hover {
+    -fx-background-color: #334155;
+    -fx-text-fill: white;
 }
 
-.menu-bar .menu:hover > .label {
-    -fx-text-fill: #1877F2;
-}
-
-/* ================= FILTER BAR ================= */
-.filter-bar {
-    -fx-background-color: #ffffff;
-    -fx-border-color: #dcdfe3;
-    -fx-border-width: 0 0 1 0;
-}
-
-/* Search field (Facebook style) */
-.search-field {
-    -fx-background-color: #f0f2f5;
-    -fx-background-radius: 20;
-    -fx-border-radius: 20;
-    -fx-padding: 6 12;
-    -fx-border-color: transparent;
-    -fx-transition: all 0.3s ease;
-}
-
-.search-field:focused {
-    -fx-background-color: white;
-    -fx-border-color: #1877F2;
-    -fx-effect: dropshadow(gaussian, rgba(24,119,242,0.3), 6, 0.3, 0, 0);
-}
-
-/* ================= TABLE ================= */
-.table-container {
-    -fx-padding: 10;
-}
-
-.appointment-table {
-    -fx-background-color: white;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.2, 0, 3);
-}
-
-/* Header */
-.appointment-table .column-header-background {
-    -fx-background-color: #1877F2;
-    -fx-background-radius: 10 10 0 0;
-}
-
-.appointment-table .column-header .label {
+/* EXIT BUTTON */
+.exit-btn {
+    -fx-background-color: #ef4444;
     -fx-text-fill: white;
     -fx-font-weight: bold;
 }
 
-/* Rows */
-.appointment-table .table-row-cell {
+.exit-btn:hover {
+    -fx-background-color: #dc2626;
+}
+
+/* TOP BAR */
+.top-bar {
     -fx-background-color: white;
-    -fx-border-color: transparent;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 0 0 1 0;
 }
 
-/* Alternating rows */
-.appointment-table .table-row-cell:even {
-    -fx-background-color: #f7f9fc;
-}
-
-/* Hover effect (smooth + modern) */
-.appointment-table .table-row-cell:hover {
-    -fx-background-color: #e7f3ff;
-    -fx-scale-x: 1.01;
-    -fx-scale-y: 1.01;
-}
-
-/* Selected row */
-.appointment-table .table-row-cell:selected {
-    -fx-background-color: #dbe7ff;
-}
-
-.appointment-table .table-row-cell:selected .text {
-    -fx-fill: #050505;
-}
-
-/* ================= ACTION BAR ================= */
-.action-bar {
-    -fx-background-color: #ffffff;
-    -fx-border-color: #dcdfe3;
-    -fx-border-width: 1 0 0 0;
-}
-
-/* ================= BUTTONS ================= */
-
-/* Base button animation */
-.button {
-    -fx-background-radius: 8;
-    -fx-cursor: hand;
+.title {
+    -fx-font-size: 18px;
     -fx-font-weight: bold;
-    -fx-padding: 8 16;
-    -fx-transition: all 0.2s ease;
 }
 
-/* Primary (Facebook blue) */
+.welcome {
+    -fx-text-fill: #64748b;
+}
+
+/* CONTENT */
+.content-area {
+    -fx-background-color: transparent;
+}
+
+/* CARDS */
+.card {
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #e5e7eb;
+}
+
+/* BUTTONS */
 .btn-primary {
-    -fx-background-color: #1877F2;
+    -fx-background-color: #3b82f6;
     -fx-text-fill: white;
 }
 
 .btn-primary:hover {
-    -fx-background-color: #166fe5;
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
+    -fx-background-color: #2563eb;
 }
 
-.btn-primary:pressed {
-    -fx-background-color: #145dbf;
-    -fx-scale-x: 0.97;
-    -fx-scale-y: 0.97;
-}
-
-/* Secondary */
 .btn-secondary {
-    -fx-background-color: #e4e6eb;
-    -fx-text-fill: #050505;
+    -fx-background-color: #e5e7eb;
 }
 
-.btn-secondary:hover {
-    -fx-background-color: #d8dadf;
-    -fx-scale-x: 1.05;
-}
-
-/* Danger */
-.btn-danger {
-    -fx-background-color: #e53935;
-    -fx-text-fill: white;
-}
-
-.btn-danger:hover {
-    -fx-background-color: #d32f2f;
-    -fx-scale-x: 1.05;
-}
-
-/* Info */
-.btn-info {
-    -fx-background-color: #00bcd4;
-    -fx-text-fill: white;
-}
-
-.btn-info:hover {
-    -fx-background-color: #00acc1;
-    -fx-scale-x: 1.05;
-}
-
-/* ================= FORM ================= */
-.form-card {
-    -fx-background-color: white;
-    -fx-padding: 25;
-    -fx-background-radius: 12;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 12, 0.3, 0, 4);
-}
-
-.form-title {
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #1877F2;
-}
-
-/* Inputs */
-.text-field, .combo-box, .date-picker {
-    -fx-background-color: #f0f2f5;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
-    -fx-padding: 6;
-}
-
-.text-field:focused,
-.combo-box:focused,
-.date-picker:focused {
-    -fx-border-color: #1877F2;
-    -fx-border-width: 2;
-    -fx-background-color: white;
-}
-
-/* ================= DETAIL VIEW ================= */
-.detail-key {
-    -fx-font-weight: bold;
-    -fx-text-fill: #65676b;
-}
-
-.detail-value {
-    -fx-text-fill: #050505;
-    -fx-font-size: 13px;
-}
-
-/* ================= EMPTY TEXT ================= */
-.empty-text {
-    -fx-text-fill: #888;
-    -fx-font-size: 14px;
+.table-view {
+    -fx-background-radius: 10;
 }

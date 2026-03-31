@@ -4,92 +4,72 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<!--
-    main-view.fxml  -  Dashboard Screen
-    Implements: Section 3 Screen 1, Use Cases 1-5
-    Accessibility: high-contrast labels, logical Tab order (Section 7)
--->
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.healthappointment.controller.MainController"
-            styleClass="root-pane">
+            stylesheets="@styles.css">
 
-    <!-- ===== Top: MenuBar + Title + Search/Filter bar ==================== -->
-    <top>
-        <VBox>
+    <!-- SIDEBAR -->
+    <left>
+        <VBox styleClass="sidebar" spacing="15">
+            <padding><Insets top="25" left="15" right="15"/></padding>
 
-            <!-- Menu Bar -->
-            <MenuBar styleClass="menu-bar">
-                <Menu text="File">
-                    <MenuItem text="Exit" onAction="#handleExit"/>
-                </Menu>
-                <Menu text="Appointments">
-                    <MenuItem text="Add Appointment"    onAction="#handleAdd"/>
-                    <MenuItem text="Edit Appointment"   onAction="#handleUpdate"/>
-                    <MenuItem text="Delete Appointment" onAction="#handleDelete"/>
-                    <SeparatorMenuItem/>
-                    <MenuItem text="View Details"       onAction="#handleViewDetails"/>
-                </Menu>
-            </MenuBar>
+            <Label text="HealthCare" styleClass="logo"/>
 
-            <!-- App Title Bar -->
-            <HBox styleClass="title-bar" alignment="CENTER_LEFT">
-                <padding><Insets top="10" right="16" bottom="10" left="16"/></padding>
-                <Label text="Health Appointment Manager" styleClass="app-title"/>
-            </HBox>
+            <Separator/>
 
-            <!-- Search + Filter bar (Proposal Section 9) -->
-            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="filter-bar">
-                <padding><Insets top="8" right="16" bottom="8" left="16"/></padding>
+            <Button text="Add Appointment" onAction="#handleAdd" styleClass="nav-btn"/>
+            <Button text="Edit Appointment" onAction="#handleUpdate" styleClass="nav-btn"/>
+            <Button text="Delete Appointment" onAction="#handleDelete" styleClass="nav-btn"/>
+            <Button text="View Details" onAction="#handleViewDetails" styleClass="nav-btn"/>
+            <Button text="Exit" onAction="#handleExit" styleClass="exit-btn"/>
 
-                <Label text="Search:" styleClass="filter-label"/>
-                <TextField fx:id="searchField"
-                           promptText="Patient name or doctor..."
-                           prefWidth="220"
-                           styleClass="search-field"/>
-
-                <Separator orientation="VERTICAL"/>
-
-                <Label text="Date:" styleClass="filter-label"/>
-                <DatePicker fx:id="filterDate" prefWidth="150"/>
-
-                <Label text="Status:" styleClass="filter-label"/>
-                <ComboBox fx:id="filterStatus" prefWidth="130"/>
-
-                <Button text="Apply Filter" onAction="#handleFilter"      styleClass="btn-primary"/>
-                <Button text="Clear"        onAction="#handleClearFilter" styleClass="btn-secondary"/>
-            </HBox>
-
+            <Region VBox.vgrow="ALWAYS"/>
         </VBox>
+    </left>
+
+    <!-- TOP BAR -->
+    <top>
+        <HBox styleClass="top-bar">
+            <padding><Insets top="10" left="20" right="20"/></padding>
+
+            <Label text="Appointment Dashboard" styleClass="title"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+        </HBox>
     </top>
 
-    <!-- ===== Centre: Appointment TableView ================================ -->
+    <!-- MAIN CONTENT -->
     <center>
-        <TableView fx:id="tableView" styleClass="appointment-table">
-            <columns>
-                <TableColumn fx:id="colId"          text="Appt. ID"     prefWidth="70"/>
-                <TableColumn fx:id="colPatientName" text="Patient Name"  prefWidth="170"/>
-                <TableColumn fx:id="colPhone"       text="Phone"         prefWidth="140"/>
-                <TableColumn fx:id="colDate"        text="Date"          prefWidth="110"/>
-                <TableColumn fx:id="colTime"        text="Time"          prefWidth="100"/>
-                <TableColumn fx:id="colDoctor"      text="Doctor"        prefWidth="130"/>
-                <TableColumn fx:id="colReason"      text="Reason"        prefWidth="140"/>
-                <TableColumn fx:id="colStatus"      text="Status"        prefWidth="100"/>
-            </columns>
-            <placeholder>
-                <Label text="No appointments found. Click Add Appointment to get started."/>
-            </placeholder>
-        </TableView>
-    </center>
+        <VBox spacing="15" styleClass="content-area">
+            <padding><Insets top="15" left="15" right="15" bottom="15"/></padding>
 
-    <!-- ===== Bottom: Action buttons ======================================= -->
-    <bottom>
-        <HBox spacing="12" alignment="CENTER" styleClass="action-bar">
-            <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
-            <Button text="Add Appointment"  onAction="#handleAdd"         styleClass="btn-primary"   prefWidth="145"/>
-            <Button text="Edit Appointment" onAction="#handleUpdate"      styleClass="btn-secondary" prefWidth="145"/>
-            <Button text="Delete"           onAction="#handleDelete"      styleClass="btn-danger"    prefWidth="110"/>
-            <Button text="View Details"     onAction="#handleViewDetails" styleClass="btn-info"      prefWidth="120"/>
-        </HBox>
-    </bottom>
+            <!-- FILTER CARD -->
+            <HBox spacing="10" styleClass="card">
+                <TextField fx:id="searchField" promptText="Search..." HBox.hgrow="ALWAYS"/>
+                <DatePicker fx:id="filterDate"/>
+                <ComboBox fx:id="filterStatus" promptText="Status"/>
+
+                <Button text="Apply" onAction="#handleFilter" styleClass="btn-primary"/>
+                <Button text="Clear" onAction="#handleClearFilter" styleClass="btn-secondary"/>
+            </HBox>
+
+            <!-- TABLE CARD -->
+            <VBox styleClass="card" VBox.vgrow="ALWAYS">
+                <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colId" text="ID" prefWidth="70"/>
+                        <TableColumn fx:id="colPatientName" text="Patient"/>
+                        <TableColumn fx:id="colPhone" text="Phone"/>
+                        <TableColumn fx:id="colDate" text="Date"/>
+                        <TableColumn fx:id="colTime" text="Time"/>
+                        <TableColumn fx:id="colDoctor" text="Doctor"/>
+                        <TableColumn fx:id="colReason" text="Reason"/>
+                        <TableColumn fx:id="colStatus" text="Status"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+        </VBox>
+    </center>
 
 </BorderPane>

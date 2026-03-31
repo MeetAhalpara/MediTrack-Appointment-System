@@ -4,98 +4,49 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<!--
-    appointment-form.fxml  -  Add / Edit Appointment Screen
-    Implements: Section 3 Screen 2, Section 8 (inline validation labels)
-    Accessibility Tab order: Name -> Phone -> Date -> Time -> Doctor -> Reason -> Status -> Save
--->
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.healthappointment.controller.AppointmentFormController"
-      spacing="0"
-      styleClass="form-root"
-      minWidth="480">
+      stylesheets="@styles.css"
+      spacing="10">
 
-    <!-- Form Title -->
-    <Label fx:id="lblTitle" text="Add Appointment" styleClass="form-title">
-        <VBox.margin><Insets top="20" right="24" bottom="12" left="24"/></VBox.margin>
-    </Label>
+    <padding><Insets top="20" left="20" right="20"/></padding>
 
-    <Separator/>
+    <Label fx:id="lblTitle" text="Add Appointment" styleClass="form-title"/>
 
-    <!-- Scrollable form body -->
-    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" styleClass="form-scroll">
-        <GridPane hgap="12" vgap="4" styleClass="form-grid">
-            <padding><Insets top="16" right="24" bottom="8" left="24"/></padding>
+    <GridPane hgap="10" vgap="6">
 
-            <!-- Patient Name -->
-            <Label text="Patient Name *" styleClass="form-label"
-                   GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-            <TextField fx:id="fieldName" promptText="Full name"
-                       GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-            <Label fx:id="lblErrName" styleClass="error-label"
-                   GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <Label text="Name"/>
+        <TextField fx:id="fieldName" GridPane.columnIndex="1"/>
+        <Label fx:id="lblErrName" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-            <!-- Phone -->
-            <Label text="Phone *" styleClass="form-label"
-                   GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-            <TextField fx:id="fieldPhone" promptText="(613) 555-0182"
-                       GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-            <Label fx:id="lblErrPhone" styleClass="error-label"
-                   GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        <Label text="Phone" GridPane.rowIndex="2"/>
+        <TextField fx:id="fieldPhone" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <Label fx:id="lblErrPhone" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
-            <!-- Date -->
-            <Label text="Date *" styleClass="form-label"
-                   GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-            <DatePicker fx:id="fieldDate"
-                        GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-            <Label fx:id="lblErrDate" styleClass="error-label"
-                   GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+        <Label text="Date" GridPane.rowIndex="4"/>
+        <DatePicker fx:id="fieldDate" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+        <Label fx:id="lblErrDate" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
 
-            <!-- Time -->
-            <Label text="Time *" styleClass="form-label"
-                   GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-            <ComboBox fx:id="fieldTime" prefWidth="220"
-                      GridPane.rowIndex="6" GridPane.columnIndex="1"/>
-            <Label fx:id="lblErrTime" styleClass="error-label"
-                   GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+        <Label text="Time" GridPane.rowIndex="6"/>
+        <ComboBox fx:id="fieldTime" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+        <Label fx:id="lblErrTime" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
 
-            <!-- Doctor -->
-            <Label text="Doctor *" styleClass="form-label"
-                   GridPane.rowIndex="8" GridPane.columnIndex="0"/>
-            <ComboBox fx:id="fieldDoctor" prefWidth="220"
-                      GridPane.rowIndex="8" GridPane.columnIndex="1"/>
-            <Label fx:id="lblErrDoctor" styleClass="error-label"
-                   GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+        <Label text="Doctor" GridPane.rowIndex="8"/>
+        <ComboBox fx:id="fieldDoctor" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+        <Label fx:id="lblErrDoctor" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
 
-            <!-- Reason / Condition -->
-            <Label text="Reason / Condition *" styleClass="form-label"
-                   GridPane.rowIndex="10" GridPane.columnIndex="0"/>
-            <TextField fx:id="fieldReason" promptText="e.g. Flu, Back Pain"
-                       GridPane.rowIndex="10" GridPane.columnIndex="1"/>
-            <Label fx:id="lblErrReason" styleClass="error-label"
-                   GridPane.rowIndex="11" GridPane.columnIndex="1"/>
+        <Label text="Reason" GridPane.rowIndex="10"/>
+        <TextField fx:id="fieldReason" GridPane.columnIndex="1" GridPane.rowIndex="10"/>
+        <Label fx:id="lblErrReason" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="11"/>
 
-            <!-- Status -->
-            <Label text="Status" styleClass="form-label"
-                   GridPane.rowIndex="12" GridPane.columnIndex="0"/>
-            <ComboBox fx:id="fieldStatus" prefWidth="220"
-                      GridPane.rowIndex="12" GridPane.columnIndex="1"/>
+        <Label text="Status" GridPane.rowIndex="12"/>
+        <ComboBox fx:id="fieldStatus" GridPane.columnIndex="1" GridPane.rowIndex="12"/>
 
-            <columnConstraints>
-                <ColumnConstraints minWidth="150" prefWidth="160"/>
-                <ColumnConstraints minWidth="200" hgrow="ALWAYS"/>
-            </columnConstraints>
-        </GridPane>
-    </ScrollPane>
+    </GridPane>
 
-    <Separator/>
-
-    <!-- Buttons -->
-    <HBox spacing="12" alignment="CENTER_RIGHT" styleClass="form-buttons">
-        <padding><Insets top="14" right="24" bottom="16" left="24"/></padding>
-        <Button text="Cancel" onAction="#handleCancel" styleClass="btn-secondary" prefWidth="100"/>
-        <Button text="Save"   onAction="#handleSave"   styleClass="btn-primary"   prefWidth="100"
-                defaultButton="true"/>
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Cancel" onAction="#handleCancel"/>
+        <Button text="Save" onAction="#handleSave" styleClass="btn-primary"/>
     </HBox>
 
 </VBox>

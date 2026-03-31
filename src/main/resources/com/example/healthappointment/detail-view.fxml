@@ -4,62 +4,45 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<!--
-    detail-view.fxml  -  Appointment Details Screen (read-only)
-    Implements: Section 3 Screen 3 / Use Case 6
--->
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.healthappointment.controller.DetailController"
-      spacing="0"
-      styleClass="form-root"
-      minWidth="460">
+      stylesheets="@styles.css"
+      spacing="12">
 
-    <!-- Title -->
-    <Label text="Appointment Details" styleClass="form-title">
-        <VBox.margin><Insets top="20" right="24" bottom="12" left="24"/></VBox.margin>
-    </Label>
-    <Separator/>
+    <padding><Insets top="20" left="20" right="20"/></padding>
 
-    <!-- Details grid -->
-    <GridPane hgap="16" vgap="14" styleClass="form-grid" VBox.vgrow="ALWAYS">
-        <padding><Insets top="20" right="28" bottom="20" left="28"/></padding>
+    <Label text="Appointment Details" styleClass="form-title"/>
 
-        <Label text="Appointment ID:"    styleClass="detail-key"   GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <Label fx:id="lblAppointmentId" styleClass="detail-value"  GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+    <GridPane hgap="10" vgap="10">
 
-        <Label text="Patient Name:"      styleClass="detail-key"   GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <Label fx:id="lblPatientName"   styleClass="detail-value"  GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <Label text="ID"/>
+        <Label fx:id="lblAppointmentId" GridPane.columnIndex="1"/>
 
-        <Label text="Phone:"             styleClass="detail-key"   GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <Label fx:id="lblPhone"         styleClass="detail-value"  GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <Label text="Name" GridPane.rowIndex="1"/>
+        <Label fx:id="lblPatientName" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-        <Label text="Date:"              styleClass="detail-key"   GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <Label fx:id="lblDate"          styleClass="detail-value"  GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        <Label text="Phone" GridPane.rowIndex="2"/>
+        <Label fx:id="lblPhone" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
-        <Label text="Time:"              styleClass="detail-key"   GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-        <Label fx:id="lblTime"          styleClass="detail-value"  GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+        <Label text="Date" GridPane.rowIndex="3"/>
+        <Label fx:id="lblDate" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
-        <Label text="Doctor:"            styleClass="detail-key"   GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-        <Label fx:id="lblDoctor"        styleClass="detail-value"  GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+        <Label text="Time" GridPane.rowIndex="4"/>
+        <Label fx:id="lblTime" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
 
-        <Label text="Reason / Condition:" styleClass="detail-key"  GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-        <Label fx:id="lblReason"         styleClass="detail-value" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+        <Label text="Doctor" GridPane.rowIndex="5"/>
+        <Label fx:id="lblDoctor" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
 
-        <Label text="Status:"            styleClass="detail-key"   GridPane.rowIndex="7" GridPane.columnIndex="0"/>
-        <Label fx:id="lblStatus"        styleClass="detail-value"  GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+        <Label text="Reason" GridPane.rowIndex="6"/>
+        <Label fx:id="lblReason" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
 
-        <columnConstraints>
-            <ColumnConstraints minWidth="160" prefWidth="180"/>
-            <ColumnConstraints minWidth="200" hgrow="ALWAYS"/>
-        </columnConstraints>
+        <Label text="Status" GridPane.rowIndex="7"/>
+        <Label fx:id="lblStatus" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+
     </GridPane>
 
-    <Separator/>
-
-    <!-- Close button -->
-    <HBox alignment="CENTER_RIGHT" styleClass="form-buttons">
-        <padding><Insets top="14" right="24" bottom="16" left="24"/></padding>
-        <Button text="Close" onAction="#handleClose" styleClass="btn-secondary" prefWidth="100"/>
+    <HBox alignment="CENTER_RIGHT">
+        <Button text="Close" onAction="#handleClose"/>
     </HBox>
 
 </VBox>

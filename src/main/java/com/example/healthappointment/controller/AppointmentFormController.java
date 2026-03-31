@@ -13,28 +13,18 @@ import javafx.stage.Stage;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-/**
- * AppointmentFormController — handles both Add and Edit workflows.
- *
- * Proposal references:
- *  Section 2  — Core feature: Add / Edit appointment
- *  Section 8  — Input validation strategy
- *  Section 3  — Screen 2: Add / Edit Appointment Form
- *  Section 7  — Accessibility: logical Tab order (Patient Name → Phone →
- *               Date → Time → Doctor → Reason → Status → Save)
- */
 public class AppointmentFormController {
 
     // ---- Form fields --------------------------------------------------------
-    @FXML private TextField         fieldName;
-    @FXML private TextField         fieldPhone;
-    @FXML private DatePicker        fieldDate;
-    @FXML private ComboBox<String>  fieldTime;
-    @FXML private ComboBox<String>  fieldDoctor;
-    @FXML private TextField         fieldReason;
-    @FXML private ComboBox<String>  fieldStatus;
+    @FXML private TextField fieldName;
+    @FXML private TextField fieldPhone;
+    @FXML private DatePicker fieldDate;
+    @FXML private ComboBox<String> fieldTime;
+    @FXML private ComboBox<String> fieldDoctor;
+    @FXML private TextField fieldReason;
+    @FXML private ComboBox<String> fieldStatus;
 
-    // ---- Inline validation labels (proposal Section 8) ----------------------
+    // ---- Error labels -------------------------------------------------------
     @FXML private Label lblErrName;
     @FXML private Label lblErrPhone;
     @FXML private Label lblErrDate;
@@ -42,22 +32,21 @@ public class AppointmentFormController {
     @FXML private Label lblErrDoctor;
     @FXML private Label lblErrReason;
 
-    // ---- Title label to distinguish Add vs Edit mode -------------------------
     @FXML private Label lblTitle;
 
-    // ---- State ---------------------------------------------------------------
-    private Appointment      editTarget;   // null = Add mode; non-null = Edit mode
-    private MainController   mainController;
+    // ---- State --------------------------------------------------------------
+    private Appointment editTarget;
+    private MainController mainController;
 
     private final AppointmentDAO appointmentDAO = new AppointmentDAO();
-    private final PatientDAO     patientDAO     = new PatientDAO();
+    private final PatientDAO patientDAO = new PatientDAO();
 
     // -------------------------------------------------------------------------
-    // Initialisation
+    // INITIALIZE
     // -------------------------------------------------------------------------
-
     @FXML
     public void initialize() {
+
         fieldTime.setItems(FXCollections.observableArrayList(
                 "09:00 AM", "10:00 AM", "11:00 AM",
                 "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM"));
@@ -70,30 +59,75 @@ public class AppointmentFormController {
                 "Scheduled", "Completed", "Cancelled"));
         fieldStatus.setValue("Scheduled");
 
-        // Clear inline error labels initially
         clearErrors();
 
-        // Real-time phone formatting hint (proposal Section 8)
-        fieldPhone.setPromptText("(613) 555-0182");
+        // 🔥 Auto phone formatter
+        applyPhoneFormatter();
 
-        // Inline validation on focus-lost (proposal Section 8)
+        // Inline validation
         fieldName.focusedProperty().addListener(
-                (obs, wasFocused, isFocused) -> { if (!isFocused) validateNameInline(); });
+                (obs, oldV, newV) -> { if (!newV) validateNameInline(); });
+
         fieldPhone.focusedProperty().addListener(
-                (obs, wasFocused, isFocused) -> { if (!isFocused) validatePhoneInline(); });
+                (obs, oldV, newV) -> { if (!newV) validatePhoneInline(); });
+
         fieldDate.focusedProperty().addListener(
-                (obs, wasFocused, isFocused) -> { if (!isFocused) validateDateInline(); });
+                (obs, oldV, newV) -> { if (!newV) validateDateInline(); });
     }
 
     // -------------------------------------------------------------------------
-    // Public API — called by MainController
+    // 🔥 PHONE FORMATTER (MAIN FEATURE)
     // -------------------------------------------------------------------------
+    private void applyPhoneFormatter() {
 
-    /** Pass null for Add mode; pass an existing Appointment for Edit mode. */
+        fieldPhone.textProperty().addListener((obs, oldValue, newValue) -> {
+
+            if (newValue == null) return;
+
+            // Remove non-digits
+            String digits = newValue.replaceAll("\\D", "");
+
+            // Limit to 10 digits
+            if (digits.length() > 10) {
+                digits = digits.substring(0, 10);
+            }
+
+            StringBuilder formatted = new StringBuilder();
+
+            if (digits.length() >= 1) {
+                formatted.append("(");
+            }
+
+            if (digits.length() >= 3) {
+                formatted.append(digits.substring(0, 3)).append(") ");
+            } else {
+                formatted.append(digits);
+            }
+
+            if (digits.length() >= 6) {
+                formatted.append(digits.substring(3, 6)).append("-");
+                formatted.append(digits.substring(6));
+            } else if (digits.length() > 3) {
+                formatted.append(digits.substring(3));
+            }
+
+            // Prevent loop
+            if (!formatted.toString().equals(newValue)) {
+                fieldPhone.setText(formatted.toString());
+                fieldPhone.positionCaret(formatted.length());
+            }
+        });
+    }
+
+    // -------------------------------------------------------------------------
+    // SET DATA
+    // -------------------------------------------------------------------------
     public void setAppointment(Appointment appt) {
         this.editTarget = appt;
+
         if (appt != null) {
             lblTitle.setText("Edit Appointment");
+
             fieldName.setText(appt.getPatientName());
             fieldPhone.setText(appt.getPhone());
             fieldDate.setValue(appt.getDate());
@@ -101,6 +135,7 @@ public class AppointmentFormController {
             fieldDoctor.setValue(appt.getDoctor());
             fieldReason.setText(appt.getReason());
             fieldStatus.setValue(appt.getStatus());
+
         } else {
             lblTitle.setText("Add Appointment");
         }
@@ -111,28 +146,27 @@ public class AppointmentFormController {
     }
 
     // -------------------------------------------------------------------------
-    // Save handler
+    // SAVE
     // -------------------------------------------------------------------------
-
     @FXML
     private void handleSave() {
-        String name   = fieldName.getText().trim();
-        String phone  = fieldPhone.getText().trim();
+
+        String name = fieldName.getText().trim();
+        String phone = fieldPhone.getText().trim();
         LocalDate date = fieldDate.getValue();
-        String time   = fieldTime.getValue();
+        String time = fieldTime.getValue();
         String doctor = fieldDoctor.getValue();
         String reason = fieldReason.getText().trim();
         String status = fieldStatus.getValue();
 
-        // --- Full validation (proposal Section 8) ---
         String errors = InputValidator.validateAll(name, phone, date, time, doctor, reason);
+
         if (!errors.isEmpty()) {
-            // Show inline errors
             showInlineErrors(name, phone, date, time, doctor, reason);
-            // Also show summary alert for accessibility
+
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setTitle("Validation Error");
-            a.setHeaderText("Please correct the following:");
+            a.setHeaderText("Fix the following:");
             a.setContentText(errors);
             a.showAndWait();
             return;
@@ -140,8 +174,7 @@ public class AppointmentFormController {
 
         try {
             if (editTarget == null) {
-                // ---- ADD mode ----
-                // Insert or find patient (normalised schema — proposal Section 6)
+
                 Patient patient = new Patient(0, name, phone);
                 patientDAO.insert(patient);
 
@@ -149,15 +182,15 @@ public class AppointmentFormController {
                         0, patient.getPatientId(), name, phone,
                         date, time, doctor, reason,
                         status != null ? status : "Scheduled");
+
                 appointmentDAO.insert(appt);
+
             } else {
-                // ---- EDIT mode ----
-                // Update patient record first
+
                 Patient patient = new Patient(
                         editTarget.getPatientId(), name, phone);
                 patientDAO.update(patient);
 
-                // Update appointment
                 editTarget.setPatientName(name);
                 editTarget.setPhone(phone);
                 editTarget.setDate(date);
@@ -165,17 +198,20 @@ public class AppointmentFormController {
                 editTarget.setDoctor(doctor);
                 editTarget.setReason(reason);
                 editTarget.setStatus(status);
+
                 appointmentDAO.update(editTarget);
             }
 
-            // Refresh dashboard
-            if (mainController != null) mainController.loadAppointmentsFromDB();
+            if (mainController != null) {
+                mainController.loadAppointmentsFromDB();
+            }
+
             closeWindow();
 
         } catch (SQLException e) {
             Alert a = new Alert(Alert.AlertType.ERROR);
             a.setTitle("Database Error");
-            a.setHeaderText("Could not save appointment");
+            a.setHeaderText("Could not save");
             a.setContentText(e.getMessage());
             a.showAndWait();
         }
@@ -187,26 +223,23 @@ public class AppointmentFormController {
     }
 
     // -------------------------------------------------------------------------
-    // Inline validation helpers (proposal Section 8)
+    // VALIDATION
     // -------------------------------------------------------------------------
-
     private void validateNameInline() {
-        String err = InputValidator.validateName(fieldName.getText());
-        lblErrName.setText(err != null ? err : "");
+        lblErrName.setText(orEmpty(InputValidator.validateName(fieldName.getText())));
     }
 
     private void validatePhoneInline() {
-        String err = InputValidator.validatePhone(fieldPhone.getText());
-        lblErrPhone.setText(err != null ? err : "");
+        lblErrPhone.setText(orEmpty(InputValidator.validatePhone(fieldPhone.getText())));
     }
 
     private void validateDateInline() {
-        String err = InputValidator.validateDate(fieldDate.getValue());
-        lblErrDate.setText(err != null ? err : "");
+        lblErrDate.setText(orEmpty(InputValidator.validateDate(fieldDate.getValue())));
     }
 
     private void showInlineErrors(String name, String phone, LocalDate date,
                                   String time, String doctor, String reason) {
+
         lblErrName.setText(orEmpty(InputValidator.validateName(name)));
         lblErrPhone.setText(orEmpty(InputValidator.validatePhone(phone)));
         lblErrDate.setText(orEmpty(InputValidator.validateDate(date)));
@@ -224,12 +257,13 @@ public class AppointmentFormController {
         lblErrReason.setText("");
     }
 
-    private String orEmpty(String s) { return s != null ? s : ""; }
+    private String orEmpty(String s) {
+        return s != null ? s : "";
+    }
 
     // -------------------------------------------------------------------------
-    // Misc
+    // CLOSE
     // -------------------------------------------------------------------------
-
     private void closeWindow() {
         ((Stage) fieldName.getScene().getWindow()).close();
     }
