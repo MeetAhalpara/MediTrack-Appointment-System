@@ -4,14 +4,26 @@
 }
 
 /* SIDEBAR */
+.side-shell {
+    -fx-background-color: #1e293b;
+}
+
+.menu-rail {
+    -fx-background-color: #1e293b;
+    -fx-pref-width: 54;
+    -fx-min-width: 54;
+}
+
 .sidebar {
     -fx-background-color: #1e293b;
     -fx-pref-width: 220;
+    -fx-border-color: #cbd5e1;
+    -fx-border-width: 0 1 0 0;
 }
 
 .logo {
     -fx-text-fill: white;
-    -fx-font-size: 20px;
+    -fx-font-size: 22px;
     -fx-font-weight: bold;
 }
 
@@ -21,6 +33,7 @@
     -fx-text-fill: #cbd5e1;
     -fx-font-size: 14px;
     -fx-alignment: CENTER_LEFT;
+    -fx-padding: 8 10 8 10;
 }
 
 .nav-btn:hover {
@@ -30,13 +43,16 @@
 
 /* EXIT BUTTON */
 .exit-btn {
-    -fx-background-color: #ef4444;
+    -fx-background-color: transparent;
     -fx-text-fill: white;
     -fx-font-weight: bold;
+    -fx-padding: 10 12;
+    -fx-background-radius: 6;
 }
 
 .exit-btn:hover {
-    -fx-background-color: #dc2626;
+    -fx-background-color: transparent;
+    -fx-text-fill: #f87171;
 }
 
 /* TOP BAR */
@@ -47,8 +63,70 @@
 }
 
 .title {
-    -fx-font-size: 18px;
+    -fx-font-size: 28px;
     -fx-font-weight: bold;
+    -fx-text-fill: #0f172a;
+}
+
+.hamburger-btn {
+    -fx-background-color: transparent;
+    -fx-padding: 6 10;
+    -fx-cursor: hand;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-insets: 0;
+    -fx-effect: null;
+}
+
+.menu-rail .hamburger-btn {
+    -fx-background-color: transparent;
+    -fx-background-radius: 6;
+}
+
+.hamburger-btn:hover {
+    -fx-background-color: transparent;
+    -fx-background-radius: 6;
+}
+
+.hamburger-btn:pressed,
+.hamburger-btn:armed,
+.hamburger-btn:focused,
+.hamburger-btn.open {
+    -fx-background-color: transparent;
+    -fx-background-radius: 6;
+}
+
+.hamburger-line {
+    -fx-pref-width: 18;
+    -fx-pref-height: 2;
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 4;
+}
+
+.menu-rail .hamburger-line {
+    -fx-background-color: #ffffff;
+}
+
+
+.hamburger-btn .hamburger-line,
+.hamburger-btn.open .hamburger-line,
+.menu-rail .hamburger-line {
+    -fx-background-color: #ffffff;
+}
+
+.hamburger-btn.open .hamburger-line {
+    -fx-background-color: #ffffff;
+}
+
+.nav-underline {
+    -fx-pref-width: 0;
+    -fx-pref-height: 2;
+    -fx-background-color: #60a5fa;
+    -fx-background-radius: 4;
+}
+
+.exit-underline {
+    -fx-background-color: #ef4444;
 }
 
 .welcome {

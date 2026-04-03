@@ -10,21 +10,52 @@
 
     <!-- SIDEBAR -->
     <left>
-        <VBox styleClass="sidebar" spacing="15">
-            <padding><Insets top="25" left="15" right="15"/></padding>
+        <HBox styleClass="side-shell">
+            <VBox styleClass="menu-rail" alignment="TOP_CENTER">
+                <padding><Insets top="16" left="8" right="8"/></padding>
+                <Button fx:id="hamburgerButton" onAction="#handleToggleSidebar" styleClass="hamburger-btn" focusTraversable="false">
+                    <graphic>
+                        <VBox spacing="4" alignment="CENTER">
+                            <Region fx:id="lineTop" styleClass="hamburger-line"/>
+                            <Region fx:id="lineMiddle" styleClass="hamburger-line"/>
+                            <Region fx:id="lineBottom" styleClass="hamburger-line"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+            </VBox>
 
-            <Label text="HealthCare" styleClass="logo"/>
+            <VBox fx:id="sidebar" styleClass="sidebar" spacing="15" visible="false" managed="false">
+                <padding><Insets top="25" left="15" right="15" bottom="18"/></padding>
 
-            <Separator/>
+                <Label text="Appoinment" styleClass="logo"/>
 
-            <Button text="Add Appointment" onAction="#handleAdd" styleClass="nav-btn"/>
-            <Button text="Edit Appointment" onAction="#handleUpdate" styleClass="nav-btn"/>
-            <Button text="Delete Appointment" onAction="#handleDelete" styleClass="nav-btn"/>
-            <Button text="View Details" onAction="#handleViewDetails" styleClass="nav-btn"/>
-            <Button text="Exit" onAction="#handleExit" styleClass="exit-btn"/>
+                <Separator/>
 
-            <Region VBox.vgrow="ALWAYS"/>
-        </VBox>
+                <VBox spacing="2" alignment="CENTER_LEFT">
+                    <Button fx:id="btnAdd" text="Add Appoinment" onAction="#handleAdd" styleClass="nav-btn" maxWidth="1.7976931348623157E308"/>
+                    <Region fx:id="underlineAdd" styleClass="nav-underline"/>
+                </VBox>
+                <VBox spacing="2" alignment="CENTER_LEFT">
+                    <Button fx:id="btnEdit" text="Edit Appoinment" onAction="#handleUpdate" styleClass="nav-btn" maxWidth="1.7976931348623157E308"/>
+                    <Region fx:id="underlineEdit" styleClass="nav-underline"/>
+                </VBox>
+                <VBox spacing="2" alignment="CENTER_LEFT">
+                    <Button fx:id="btnDelete" text="Delet Appoinment" onAction="#handleDelete" styleClass="nav-btn" maxWidth="1.7976931348623157E308"/>
+                    <Region fx:id="underlineDelete" styleClass="nav-underline"/>
+                </VBox>
+                <VBox spacing="2" alignment="CENTER_LEFT">
+                    <Button fx:id="btnDetails" text="View Details" onAction="#handleViewDetails" styleClass="nav-btn" maxWidth="1.7976931348623157E308"/>
+                    <Region fx:id="underlineDetails" styleClass="nav-underline"/>
+                </VBox>
+
+                <Region VBox.vgrow="ALWAYS"/>
+
+                <VBox spacing="2" alignment="CENTER_LEFT">
+                    <Button fx:id="btnExit" text="Exit" onAction="#handleExit" styleClass="exit-btn" maxWidth="1.7976931348623157E308"/>
+                    <Region fx:id="underlineExit" styleClass="nav-underline, exit-underline"/>
+                </VBox>
+            </VBox>
+        </HBox>
     </left>
 
     <!-- TOP BAR -->
@@ -32,8 +63,8 @@
         <HBox styleClass="top-bar">
             <padding><Insets top="10" left="20" right="20"/></padding>
 
-            <Label text="Appointment Dashboard" styleClass="title"/>
-
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="HealthCare" styleClass="title"/>
             <Region HBox.hgrow="ALWAYS"/>
         </HBox>
     </top>
