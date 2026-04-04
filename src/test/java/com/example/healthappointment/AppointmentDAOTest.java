@@ -53,9 +53,8 @@ class AppointmentDAOTest {
         patientDAO.delete(testPatientId);
     }
 
-    // -------------------------------------------------------------------------
     // Insert (UC1 — Create Appointment)
-    // -------------------------------------------------------------------------
+
 
     @Test
     @Order(1)
@@ -67,9 +66,7 @@ class AppointmentDAOTest {
         insertedApptId = id;
     }
 
-    // -------------------------------------------------------------------------
     // FindAll (UC2 — View Appointments)
-    // -------------------------------------------------------------------------
 
     @Test
     @Order(2)
@@ -90,9 +87,7 @@ class AppointmentDAOTest {
         assertTrue(found, "Inserted appointment should appear in findAll()");
     }
 
-    // -------------------------------------------------------------------------
     // FindById
-    // -------------------------------------------------------------------------
 
     @Test
     @Order(4)
@@ -113,9 +108,8 @@ class AppointmentDAOTest {
         assertTrue(found.isEmpty(), "findById with a bogus ID should return empty Optional");
     }
 
-    // -------------------------------------------------------------------------
+
     // Update (UC3)
-    // -------------------------------------------------------------------------
 
     @Test
     @Order(6)

@@ -5,6 +5,7 @@ import com.example.healthappointment.dao.PatientDAO;
 import com.example.healthappointment.model.Appointment;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -88,17 +89,10 @@ public class MainController {
                     setText(status);
 
                     switch (status) {
-                        case "Scheduled":
-                            setStyle("-fx-text-fill: #3b82f6; -fx-font-weight: bold;");
-                            break;
-                        case "Completed":
-                            setStyle("-fx-text-fill: #22c55e; -fx-font-weight: bold;");
-                            break;
-                        case "Cancelled":
-                            setStyle("-fx-text-fill: #ef4444; -fx-font-weight: bold;");
-                            break;
-                        default:
-                            setStyle("");
+                        case "Scheduled" -> setStyle("-fx-text-fill: #3b82f6; -fx-font-weight: bold;");
+                        case "Completed" -> setStyle("-fx-text-fill: #22c55e; -fx-font-weight: bold;");
+                        case "Cancelled" -> setStyle("-fx-text-fill: #ef4444; -fx-font-weight: bold;");
+                        default -> setStyle("");
                     }
                 }
             }
@@ -106,26 +100,42 @@ public class MainController {
     }
 
     private void setupFilterStatus() {
-        filterStatus.setItems(FXCollections.observableArrayList(
-                "", "Scheduled", "Completed", "Cancelled"));
+        filterStatus.setItems(FXCollections.observableArrayList("", "Scheduled", "Completed", "Cancelled"));
         filterStatus.setValue("");
     }
 
     // -------------------------------------------------------------------------
-    // LOAD DATA
+    // LOAD DATA WITH THREADING
     // -------------------------------------------------------------------------
     public void loadAppointmentsFromDB() {
-        try {
-            List<Appointment> list = appointmentDAO.findAll();
-            masterList.setAll(list);
+        Task<List<Appointment>> task = new Task<>() {
+            @Override
+            protected List<Appointment> call() throws Exception {
+                return appointmentDAO.findAll();
+            }
+        };
+
+        task.setOnRunning(e -> {
+            tableView.setDisable(true);
+            tableView.setPlaceholder(new Label("Loading appointments..."));
+        });
+
+        task.setOnSucceeded(e -> {
+            masterList.setAll(task.getValue());
             tableView.setItems(masterList);
-        } catch (SQLException e) {
-            showError("Database Error", e.getMessage());
-        }
+            tableView.setDisable(false);
+        });
+
+        task.setOnFailed(e -> {
+            tableView.setDisable(false);
+            showError("Database Error", task.getException().getMessage());
+        });
+
+        new Thread(task).start();
     }
 
     // -------------------------------------------------------------------------
-    // SEARCH
+    // SEARCH WITH THREADING
     // -------------------------------------------------------------------------
     private void applySearch(String keyword) {
         if (keyword == null || keyword.isBlank()) {
@@ -133,34 +143,57 @@ public class MainController {
             return;
         }
 
-        try {
-            List<Appointment> results =
-                    appointmentDAO.searchByNameOrDoctor(keyword.trim());
-            tableView.setItems(FXCollections.observableArrayList(results));
-        } catch (SQLException e) {
-            showError("Search Error", e.getMessage());
-        }
+        Task<List<Appointment>> task = new Task<>() {
+            @Override
+            protected List<Appointment> call() throws Exception {
+                return appointmentDAO.searchByNameOrDoctor(keyword.trim());
+            }
+        };
+
+        task.setOnRunning(e -> tableView.setDisable(true));
+
+        task.setOnSucceeded(e -> {
+            tableView.setItems(FXCollections.observableArrayList(task.getValue()));
+            tableView.setDisable(false);
+        });
+
+        task.setOnFailed(e -> {
+            tableView.setDisable(false);
+            showError("Search Error", task.getException().getMessage());
+        });
+
+        new Thread(task).start();
     }
 
     // -------------------------------------------------------------------------
-    // FILTER
+    // FILTER WITH THREADING
     // -------------------------------------------------------------------------
     @FXML
     private void handleFilter() {
         LocalDate date = filterDate.getValue();
         String status = filterStatus.getValue();
+        String filterStatusValue = (status == null || status.isEmpty()) ? null : status;
 
-        try {
-            List<Appointment> results =
-                    appointmentDAO.filterByDateAndStatus(
-                            date,
-                            (status == null || status.isEmpty()) ? null : status
-                    );
+        Task<List<Appointment>> task = new Task<>() {
+            @Override
+            protected List<Appointment> call() throws Exception {
+                return appointmentDAO.filterByDateAndStatus(date, filterStatusValue);
+            }
+        };
 
-            tableView.setItems(FXCollections.observableArrayList(results));
-        } catch (SQLException e) {
-            showError("Filter Error", e.getMessage());
-        }
+        task.setOnRunning(e -> tableView.setDisable(true));
+
+        task.setOnSucceeded(e -> {
+            tableView.setItems(FXCollections.observableArrayList(task.getValue()));
+            tableView.setDisable(false);
+        });
+
+        task.setOnFailed(e -> {
+            tableView.setDisable(false);
+            showError("Filter Error", task.getException().getMessage());
+        });
+
+        new Thread(task).start();
     }
 
     @FXML
@@ -175,9 +208,7 @@ public class MainController {
     // CRUD
     // -------------------------------------------------------------------------
     @FXML
-    private void handleAdd() {
-        openForm(null);
-    }
+    private void handleAdd() { openForm(null); }
 
     @FXML
     private void handleUpdate() {
@@ -201,12 +232,18 @@ public class MainController {
         confirm.setHeaderText("Delete appointment?");
         confirm.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.OK) {
-                try {
-                    appointmentDAO.delete(selected.getAppointmentId());
-                    loadAppointmentsFromDB();
-                } catch (SQLException e) {
-                    showError("Delete Error", e.getMessage());
-                }
+                Task<Void> task = new Task<>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        appointmentDAO.delete(selected.getAppointmentId());
+                        return null;
+                    }
+                };
+
+                task.setOnSucceeded(e -> loadAppointmentsFromDB());
+                task.setOnFailed(e -> showError("Delete Error", task.getException().getMessage()));
+
+                new Thread(task).start();
             }
         });
     }

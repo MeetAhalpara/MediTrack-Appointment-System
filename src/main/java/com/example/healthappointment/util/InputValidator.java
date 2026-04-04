@@ -11,10 +11,15 @@ public class InputValidator {
     }
 
     public static String validatePhone(String phone) {
-        if (phone == null || phone.trim().isEmpty())
+        if (phone == null || phone.trim().isEmpty()) {
             return "Phone is required";
-        if (!phone.matches("\\d{10}|\\(\\d{3}\\) \\d{3}-\\d{4}"))
-            return "Invalid phone format";
+        }
+
+        // STRICT format: (613) 555-0182 ONLY
+        if (!phone.matches("^\\(\\d{3}\\) \\d{3}-\\d{4}$")) {
+            return "Phone must be in format (XXX) XXX-XXXX";
+        }
+
         return null;
     }
 
@@ -33,8 +38,9 @@ public class InputValidator {
     }
 
     public static String validateDoctor(String doctor) {
-        if (doctor == null || doctor.isEmpty())
-            return "Select a doctor";
+        if (doctor == null || doctor.trim().isEmpty()) {
+            return "Doctor name is required";
+        }
         return null;
     }
 

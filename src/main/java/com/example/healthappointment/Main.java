@@ -4,6 +4,7 @@ import com.example.healthappointment.util.DatabaseConnection;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -19,6 +20,10 @@ public class Main extends Application {
         Scene scene = new Scene(loader.load(), 900, 600);
 
         stage.setTitle("Health Appointment Manager");
+        stage.getIcons().add(
+                new Image(getClass().getResourceAsStream("/com/example/healthappointment/icon.png"))
+        );
+
         stage.setScene(scene);
         stage.show();
     }
