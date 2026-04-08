@@ -80,6 +80,18 @@ class InputValidatorTest {
         assertNotNull(InputValidator.validateDate(LocalDate.now().minusDays(1)),
                 "Yesterday's date should be rejected");
     }
+    @Test
+    void validateReason_longText_returnsNull() {
+        String longReason = "Follow-up consultation for recurring migraine symptoms and medication review";
+        assertNull(InputValidator.validateReason(longReason),
+                "A meaningful long reason should still be accepted");
+    }
+
+    @Test
+    void validateDoctor_specialCharacters_returnsNull() {
+        assertNull(InputValidator.validateDoctor("Dr. O'Brien"),
+                "Doctor names with apostrophes should be accepted");
+    }
 
     @Test
     void validateDate_today_returnsNull() {

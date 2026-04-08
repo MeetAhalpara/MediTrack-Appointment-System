@@ -8,16 +8,44 @@ import java.sql.Statement;
 public class DatabaseConnection {
 
     private static Connection connection;
-    private static final String URL =
+
+    // Default production database
+    private static String url =
             "jdbc:sqlite:" + System.getProperty("user.home") + "/appointments.db";
+
+    /**
+     * Allows tests to switch to a separate database.
+     */
+    public static void setDatabaseUrl(String newUrl) throws SQLException {
+        closeConnection();
+        url = newUrl;
+    }
+
+    /**
+     * Resets database URL back to the default application database.
+     */
+    public static void resetToDefaultDatabase() throws SQLException {
+        closeConnection();
+        url = "jdbc:sqlite:" + System.getProperty("user.home") + "/appointments.db";
+    }
 
     public static Connection getInstance() throws SQLException {
         if (connection == null || connection.isClosed()) {
-            connection = DriverManager.getConnection(URL);
+            connection = DriverManager.getConnection(url);
+
+            // Enable foreign key support for SQLite
+            try (Statement stmt = connection.createStatement()) {
+                stmt.execute("PRAGMA foreign_keys = ON");
+            }
         }
         return connection;
     }
 
+    public static void closeConnection() throws SQLException {
+        if (connection != null && !connection.isClosed()) {
+            connection.close();
+        }
+    }
 
     public static void initializeDatabase() {
 
