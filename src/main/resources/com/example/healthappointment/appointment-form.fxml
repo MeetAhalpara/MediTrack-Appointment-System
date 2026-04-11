@@ -4,49 +4,95 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
+<VBox fx:id="root" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.healthappointment.controller.AppointmentFormController"
       stylesheets="@styles.css"
+    styleClass="popup-root"
+      alignment="TOP_CENTER"
       spacing="10">
 
     <padding><Insets top="20" left="20" right="20"/></padding>
 
-    <Label fx:id="lblTitle" text="Add Appointment" styleClass="form-title"/>
+    <VBox styleClass="popup-form-shell" maxWidth="920.0" fillWidth="true" spacing="10">
+        <Label fx:id="lblTitle" text="Add Appointment" styleClass="form-title"/>
+        <HBox spacing="4" alignment="CENTER_LEFT" styleClass="important-note">
+            <Label text="Fields marked" />
+            <Label text="*" styleClass="mandatory-star" />
+            <Label text="are mandatory and must be filled." wrapText="true" />
+        </HBox>
 
-    <GridPane hgap="10" vgap="6">
+        <GridPane styleClass="popup-form-grid" hgap="15" vgap="10" maxWidth="Infinity">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" minWidth="90.0" prefWidth="120.0" />
+                <ColumnConstraints hgrow="ALWAYS" minWidth="220.0" prefWidth="520.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="15.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="15.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="15.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="15.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="15.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="15.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
 
-        <Label text="Name"/>
-        <TextField fx:id="fieldName" GridPane.columnIndex="1"/>
-        <Label fx:id="lblErrName" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            <HBox spacing="3" alignment="CENTER_LEFT">
+                <Label text="Name" styleClass="form-label"/>
+                <Label text="*" styleClass="mandatory-star"/>
+            </HBox>
+            <TextField fx:id="fieldName" GridPane.columnIndex="1" maxWidth="Infinity"/>
+            <Label fx:id="lblErrName" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-        <Label text="Phone" GridPane.rowIndex="2"/>
-        <TextField fx:id="fieldPhone" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-        <Label fx:id="lblErrPhone" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+            <HBox spacing="3" GridPane.rowIndex="2" alignment="CENTER_LEFT">
+                <Label text="Phone" styleClass="form-label"/>
+                <Label text="*" styleClass="mandatory-star"/>
+            </HBox>
+            <TextField fx:id="fieldPhone" GridPane.columnIndex="1" GridPane.rowIndex="2" maxWidth="Infinity"/>
+            <Label fx:id="lblErrPhone" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
-        <Label text="Date" GridPane.rowIndex="4"/>
-        <DatePicker fx:id="fieldDate" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-        <Label fx:id="lblErrDate" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+            <HBox spacing="3" GridPane.rowIndex="4" alignment="CENTER_LEFT">
+                <Label text="Date" styleClass="form-label"/>
+                <Label text="*" styleClass="mandatory-star"/>
+            </HBox>
+            <DatePicker fx:id="fieldDate" GridPane.columnIndex="1" GridPane.rowIndex="4" maxWidth="Infinity"/>
+            <Label fx:id="lblErrDate" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
 
-        <Label text="Time" GridPane.rowIndex="6"/>
-        <ComboBox fx:id="fieldTime" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
-        <Label fx:id="lblErrTime" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+            <HBox spacing="3" GridPane.rowIndex="6" alignment="CENTER_LEFT">
+                <Label text="Time" styleClass="form-label"/>
+                <Label text="*" styleClass="mandatory-star"/>
+            </HBox>
+            <ComboBox fx:id="fieldTime" GridPane.columnIndex="1" GridPane.rowIndex="6" maxWidth="Infinity"/>
+            <Label fx:id="lblErrTime" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
 
-        <Label text="Doctor" GridPane.rowIndex="8"/>
-        <ComboBox fx:id="fieldDoctor" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
-        <Label fx:id="lblErrDoctor" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
+            <HBox spacing="3" GridPane.rowIndex="8" alignment="CENTER_LEFT">
+                <Label text="Doctor" styleClass="form-label"/>
+                <Label text="*" styleClass="mandatory-star"/>
+            </HBox>
+            <ComboBox fx:id="fieldDoctor" GridPane.columnIndex="1" GridPane.rowIndex="8" maxWidth="Infinity"/>
+            <Label fx:id="lblErrDoctor" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
 
-        <Label text="Reason" GridPane.rowIndex="10"/>
-        <TextField fx:id="fieldReason" GridPane.columnIndex="1" GridPane.rowIndex="10"/>
-        <Label fx:id="lblErrReason" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="11"/>
+            <HBox spacing="3" GridPane.rowIndex="10" alignment="CENTER_LEFT">
+                <Label text="Reason" styleClass="form-label"/>
+                <Label text="*" styleClass="mandatory-star"/>
+            </HBox>
+            <TextField fx:id="fieldReason" GridPane.columnIndex="1" GridPane.rowIndex="10" maxWidth="Infinity"/>
+            <Label fx:id="lblErrReason" styleClass="error-label" GridPane.columnIndex="1" GridPane.rowIndex="11"/>
 
-        <Label text="Status" GridPane.rowIndex="12"/>
-        <ComboBox fx:id="fieldStatus" GridPane.columnIndex="1" GridPane.rowIndex="12"/>
+            <Label text="Status" GridPane.rowIndex="12" styleClass="form-label"/>
+            <ComboBox fx:id="fieldStatus" GridPane.columnIndex="1" GridPane.rowIndex="12" maxWidth="Infinity"/>
 
-    </GridPane>
+        </GridPane>
 
-    <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button text="Cancel" onAction="#handleCancel"/>
-        <Button text="Save" onAction="#handleSave" styleClass="btn-primary"/>
-    </HBox>
+        <HBox spacing="10" alignment="CENTER" styleClass="popup-form-actions">
+            <Button text="Save" onAction="#handleSave" styleClass="btn-primary popup-save-btn"/>
+            <Button text="Cancel" onAction="#handleCancel" styleClass="popup-cancel-btn"/>
+        </HBox>
+    </VBox>
 
 </VBox>

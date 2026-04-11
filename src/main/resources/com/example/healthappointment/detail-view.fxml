@@ -4,44 +4,49 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
+<VBox fx:id="root" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.healthappointment.controller.DetailController"
       stylesheets="@styles.css"
+    styleClass="popup-root"
       spacing="12">
 
     <padding><Insets top="20" left="20" right="20"/></padding>
 
     <Label text="Appointment Details" styleClass="form-title"/>
 
-    <GridPane hgap="10" vgap="10">
+    <GridPane hgap="15" vgap="12">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="60.0" prefWidth="80.0" />
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200.0" prefWidth="250.0" />
+        </columnConstraints>
 
-        <Label text="ID"/>
+        <Label text="ID" styleClass="form-label"/>
         <Label fx:id="lblAppointmentId" GridPane.columnIndex="1"/>
 
-        <Label text="Name" GridPane.rowIndex="1"/>
+        <Label text="Name" GridPane.rowIndex="1" styleClass="form-label"/>
         <Label fx:id="lblPatientName" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
-        <Label text="Phone" GridPane.rowIndex="2"/>
+        <Label text="Phone" GridPane.rowIndex="2" styleClass="form-label"/>
         <Label fx:id="lblPhone" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
-        <Label text="Date" GridPane.rowIndex="3"/>
+        <Label text="Date" GridPane.rowIndex="3" styleClass="form-label"/>
         <Label fx:id="lblDate" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
-        <Label text="Time" GridPane.rowIndex="4"/>
+        <Label text="Time" GridPane.rowIndex="4" styleClass="form-label"/>
         <Label fx:id="lblTime" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
 
-        <Label text="Doctor" GridPane.rowIndex="5"/>
+        <Label text="Doctor" GridPane.rowIndex="5" styleClass="form-label"/>
         <Label fx:id="lblDoctor" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
 
-        <Label text="Reason" GridPane.rowIndex="6"/>
-        <Label fx:id="lblReason" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+        <Label text="Reason" GridPane.rowIndex="6" styleClass="form-label"/>
+        <Label fx:id="lblReason" GridPane.columnIndex="1" GridPane.rowIndex="6" wrapText="true"/>
 
-        <Label text="Status" GridPane.rowIndex="7"/>
+        <Label text="Status" GridPane.rowIndex="7" styleClass="form-label"/>
         <Label fx:id="lblStatus" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
 
     </GridPane>
 
-    <HBox alignment="CENTER_RIGHT">
+    <HBox alignment="CENTER" styleClass="popup-form-actions">
         <Button text="Close" onAction="#handleClose"/>
     </HBox>
 

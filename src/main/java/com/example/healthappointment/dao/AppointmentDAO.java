@@ -76,8 +76,9 @@ public class AppointmentDAO {
     // -------------------------------------------------------------------------
 
     /** Returns all appointments ordered by date then time. */
+    /** Returns all appointments ordered by appointment_id (insertion order). */
     public List<Appointment> findAll() throws SQLException {
-        String sql = SELECT_ALL + " ORDER BY a.date, a.time";
+        String sql = SELECT_ALL + " ORDER BY a.appointment_id ASC";
         return query(sql);
     }
 

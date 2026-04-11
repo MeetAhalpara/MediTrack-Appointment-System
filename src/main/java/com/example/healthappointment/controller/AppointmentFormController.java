@@ -4,11 +4,25 @@ import com.example.healthappointment.dao.AppointmentDAO;
 import com.example.healthappointment.dao.PatientDAO;
 import com.example.healthappointment.model.Appointment;
 import com.example.healthappointment.model.Patient;
+import com.example.healthappointment.util.GlassButtonAnimator;
 import com.example.healthappointment.util.InputValidator;
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.ParallelTransition;
+import javafx.animation.ScaleTransition;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.util.Duration;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -33,6 +47,7 @@ public class AppointmentFormController {
     @FXML private Label lblErrReason;
 
     @FXML private Label lblTitle;
+    @FXML private VBox root;
 
     // ---- State --------------------------------------------------------------
     private Appointment editTarget;
@@ -64,6 +79,9 @@ public class AppointmentFormController {
         // 🔥 Auto phone formatter
         applyPhoneFormatter();
 
+        setupDatePickerConstraints();
+        setupEnterNavigation();
+
         // Inline validation
         fieldName.focusedProperty().addListener(
                 (obs, oldV, newV) -> { if (!newV) validateNameInline(); });
@@ -73,6 +91,18 @@ public class AppointmentFormController {
 
         fieldDate.focusedProperty().addListener(
                 (obs, oldV, newV) -> { if (!newV) validateDateInline(); });
+
+        setupAppWideButtonAnimation();
+    }
+
+    private void setupAppWideButtonAnimation() {
+        root.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene == null) {
+                return;
+            }
+            Platform.runLater(() -> GlassButtonAnimator.applyToButtons(root));
+        });
+        Platform.runLater(() -> GlassButtonAnimator.applyToButtons(root));
     }
 
     // -------------------------------------------------------------------------
@@ -92,29 +122,67 @@ public class AppointmentFormController {
                 digits = digits.substring(0, 10);
             }
 
-            StringBuilder formatted = new StringBuilder();
-
-            if (digits.length() >= 1) {
-                formatted.append("(");
-            }
-
-            if (digits.length() >= 3) {
-                formatted.append(digits.substring(0, 3)).append(") ");
+            String formatted;
+            if (digits.length() <= 3) {
+                formatted = digits;
+            } else if (digits.length() <= 6) {
+                formatted = "(" + digits.substring(0, 3) + ") " + digits.substring(3);
             } else {
-                formatted.append(digits);
-            }
-
-            if (digits.length() >= 6) {
-                formatted.append(digits.substring(3, 6)).append("-");
-                formatted.append(digits.substring(6));
-            } else if (digits.length() > 3) {
-                formatted.append(digits.substring(3));
+                formatted = "(" + digits.substring(0, 3) + ") " + digits.substring(3, 6) + "-" + digits.substring(6);
             }
 
             // Prevent loop
-            if (!formatted.toString().equals(newValue)) {
-                fieldPhone.setText(formatted.toString());
+            if (!formatted.equals(newValue)) {
+                fieldPhone.setText(formatted);
                 fieldPhone.positionCaret(formatted.length());
+            }
+        });
+    }
+
+    private void setupDatePickerConstraints() {
+        fieldDate.setEditable(false);
+        fieldDate.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                setDisable(empty || item.isBefore(LocalDate.now()));
+            }
+        });
+    }
+
+    private void setupEnterNavigation() {
+        bindEnterToNext(fieldName, fieldPhone);
+        bindEnterToNext(fieldPhone, fieldDate);
+        bindEnterToNext(fieldDate, fieldTime);
+        bindEnterToNext(fieldTime, fieldDoctor);
+        bindEnterToNext(fieldDoctor, fieldReason);
+        bindEnterToNext(fieldReason, fieldStatus);
+        bindEnterToNext(fieldStatus, null);
+
+        fieldDate.getEditor().addEventFilter(KeyEvent.KEY_PRESSED, evt -> {
+            if (evt.getCode() == KeyCode.ENTER) {
+                evt.consume();
+                fieldTime.requestFocus();
+                fieldTime.show();
+            }
+        });
+    }
+
+    private void bindEnterToNext(Control current, Control next) {
+        current.addEventFilter(KeyEvent.KEY_PRESSED, evt -> {
+            if (evt.getCode() != KeyCode.ENTER) {
+                return;
+            }
+
+            evt.consume();
+            if (next == null) {
+                handleSave();
+                return;
+            }
+
+            next.requestFocus();
+            if (next instanceof ComboBox<?> comboBox) {
+                comboBox.show();
             }
         });
     }
@@ -164,11 +232,7 @@ public class AppointmentFormController {
         if (!errors.isEmpty()) {
             showInlineErrors(name, phone, date, time, doctor, reason);
 
-            Alert a = new Alert(Alert.AlertType.ERROR);
-            a.setTitle("Validation Error");
-            a.setHeaderText("Fix the following:");
-            a.setContentText(errors);
-            a.showAndWait();
+            showValidationError(errors);
             return;
         }
 
@@ -226,26 +290,45 @@ public class AppointmentFormController {
     // VALIDATION
     // -------------------------------------------------------------------------
     private void validateNameInline() {
-        lblErrName.setText(orEmpty(InputValidator.validateName(fieldName.getText())));
+        String error = InputValidator.validateName(fieldName.getText());
+        lblErrName.setText(orEmpty(error));
+        setErrorState(fieldName, error != null);
     }
 
     private void validatePhoneInline() {
-        lblErrPhone.setText(orEmpty(InputValidator.validatePhone(fieldPhone.getText())));
+        String error = InputValidator.validatePhone(fieldPhone.getText());
+        lblErrPhone.setText(orEmpty(error));
+        setErrorState(fieldPhone, error != null);
     }
 
     private void validateDateInline() {
-        lblErrDate.setText(orEmpty(InputValidator.validateDate(fieldDate.getValue())));
+        String error = InputValidator.validateDate(fieldDate.getValue());
+        lblErrDate.setText(orEmpty(error));
+        setErrorState(fieldDate, error != null);
     }
 
     private void showInlineErrors(String name, String phone, LocalDate date,
                                   String time, String doctor, String reason) {
+        String nameError = InputValidator.validateName(name);
+        String phoneError = InputValidator.validatePhone(phone);
+        String dateError = InputValidator.validateDate(date);
+        String timeError = InputValidator.validateTime(time);
+        String doctorError = InputValidator.validateDoctor(doctor);
+        String reasonError = InputValidator.validateReason(reason);
 
-        lblErrName.setText(orEmpty(InputValidator.validateName(name)));
-        lblErrPhone.setText(orEmpty(InputValidator.validatePhone(phone)));
-        lblErrDate.setText(orEmpty(InputValidator.validateDate(date)));
-        lblErrTime.setText(orEmpty(InputValidator.validateTime(time)));
-        lblErrDoctor.setText(orEmpty(InputValidator.validateDoctor(doctor)));
-        lblErrReason.setText(orEmpty(InputValidator.validateReason(reason)));
+        lblErrName.setText(orEmpty(nameError));
+        lblErrPhone.setText(orEmpty(phoneError));
+        lblErrDate.setText(orEmpty(dateError));
+        lblErrTime.setText(orEmpty(timeError));
+        lblErrDoctor.setText(orEmpty(doctorError));
+        lblErrReason.setText(orEmpty(reasonError));
+
+        setErrorState(fieldName, nameError != null);
+        setErrorState(fieldPhone, phoneError != null);
+        setErrorState(fieldDate, dateError != null);
+        setErrorState(fieldTime, timeError != null);
+        setErrorState(fieldDoctor, doctorError != null);
+        setErrorState(fieldReason, reasonError != null);
     }
 
     private void clearErrors() {
@@ -255,6 +338,126 @@ public class AppointmentFormController {
         lblErrTime.setText("");
         lblErrDoctor.setText("");
         lblErrReason.setText("");
+
+        setErrorState(fieldName, false);
+        setErrorState(fieldPhone, false);
+        setErrorState(fieldDate, false);
+        setErrorState(fieldTime, false);
+        setErrorState(fieldDoctor, false);
+        setErrorState(fieldReason, false);
+    }
+
+    private void setErrorState(Control control, boolean hasError) {
+        if (control == null) {
+            return;
+        }
+        if (hasError) {
+            if (!control.getStyleClass().contains("input-error")) {
+                control.getStyleClass().add("input-error");
+            }
+            animateInvalidControl(control);
+            return;
+        }
+        control.getStyleClass().remove("input-error");
+        control.getStyleClass().remove("input-error-animated");
+    }
+
+    private void showValidationError(String errors) {
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Validation Error");
+
+        Label title = new Label("Please complete the missing information");
+        title.getStyleClass().add("validation-title");
+
+        Label subtitle = new Label("The appointment cannot be saved until all required details are valid.");
+        subtitle.getStyleClass().add("validation-subtitle");
+        subtitle.setWrapText(true);
+
+        VBox listBox = new VBox(6);
+        listBox.getStyleClass().add("validation-list");
+
+        for (String line : errors.split("\\R")) {
+            String text = line == null ? "" : line.trim();
+            if (text.isEmpty()) {
+                continue;
+            }
+            if (text.startsWith("•")) {
+                text = text.substring(1).trim();
+            }
+
+            Label item = new Label("• " + text);
+            item.setWrapText(true);
+            item.getStyleClass().add("validation-item");
+            listBox.getChildren().add(item);
+        }
+
+        VBox content = new VBox(10, title, subtitle, listBox);
+        content.getStyleClass().add("validation-dialog-content");
+
+        dialog.getDialogPane().setContent(content);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+
+        Window owner = fieldName != null && fieldName.getScene() != null ? fieldName.getScene().getWindow() : null;
+        if (owner != null) {
+            dialog.initOwner(owner);
+        }
+
+        DialogPane pane = dialog.getDialogPane();
+        pane.setGraphic(null);
+        if (!pane.getStyleClass().contains("app-dialog")) {
+            pane.getStyleClass().add("app-dialog");
+        }
+        if (!pane.getStyleClass().contains("validation-dialog")) {
+            pane.getStyleClass().add("validation-dialog");
+        }
+
+        String cssPath = getClass().getResource("/com/example/healthappointment/styles.css").toExternalForm();
+        if (!pane.getStylesheets().contains(cssPath)) {
+            pane.getStylesheets().add(cssPath);
+        }
+
+        dialog.showAndWait();
+    }
+
+    private void animateInvalidControl(Control control) {
+        Animation running = (Animation) control.getProperties().get("invalidAnimation");
+        if (running != null) {
+            running.stop();
+        }
+
+        if (!control.getStyleClass().contains("input-error-animated")) {
+            control.getStyleClass().add("input-error-animated");
+        }
+
+        Timeline shake = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(control.translateXProperty(), 0, Interpolator.EASE_BOTH)),
+                new KeyFrame(Duration.millis(55), new KeyValue(control.translateXProperty(), -5.5, Interpolator.EASE_BOTH)),
+                new KeyFrame(Duration.millis(110), new KeyValue(control.translateXProperty(), 5.5, Interpolator.EASE_BOTH)),
+                new KeyFrame(Duration.millis(170), new KeyValue(control.translateXProperty(), -4.0, Interpolator.EASE_BOTH)),
+                new KeyFrame(Duration.millis(225), new KeyValue(control.translateXProperty(), 4.0, Interpolator.EASE_BOTH)),
+                new KeyFrame(Duration.millis(280), new KeyValue(control.translateXProperty(), 0, Interpolator.EASE_BOTH))
+        );
+
+        ScaleTransition pulse = new ScaleTransition(Duration.millis(140), control);
+        pulse.setFromX(1.0);
+        pulse.setFromY(1.0);
+        pulse.setToX(1.012);
+        pulse.setToY(1.012);
+        pulse.setCycleCount(2);
+        pulse.setAutoReverse(true);
+        pulse.setInterpolator(Interpolator.EASE_BOTH);
+
+        ParallelTransition invalidFx = new ParallelTransition(shake, pulse);
+        invalidFx.setOnFinished(evt -> {
+            control.setTranslateX(0);
+            control.setScaleX(1.0);
+            control.setScaleY(1.0);
+            control.getStyleClass().remove("input-error-animated");
+            control.getProperties().remove("invalidAnimation");
+        });
+
+        control.getProperties().put("invalidAnimation", invalidFx);
+        invalidFx.play();
     }
 
     private String orEmpty(String s) {

@@ -1,8 +1,11 @@
 package com.example.healthappointment.controller;
 
 import com.example.healthappointment.model.Appointment;
+import com.example.healthappointment.util.GlassButtonAnimator;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -13,6 +16,8 @@ import javafx.stage.Stage;
  */
 public class DetailController {
 
+    @FXML private VBox root;
+
     @FXML private Label lblAppointmentId;
     @FXML private Label lblPatientName;
     @FXML private Label lblPhone;
@@ -21,6 +26,17 @@ public class DetailController {
     @FXML private Label lblDoctor;
     @FXML private Label lblReason;
     @FXML private Label lblStatus;
+
+    @FXML
+    public void initialize() {
+        root.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene == null) {
+                return;
+            }
+            Platform.runLater(() -> GlassButtonAnimator.applyToButtons(root));
+        });
+        Platform.runLater(() -> GlassButtonAnimator.applyToButtons(root));
+    }
 
     /**
      * Populates the view with data from the given appointment.
