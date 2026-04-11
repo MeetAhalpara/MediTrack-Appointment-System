@@ -94,9 +94,7 @@ public class PatientDAO {
         }
     }
 
-    // -------------------------------------------------------------------------
     // Private helpers
-    // -------------------------------------------------------------------------
 
     private Patient map(ResultSet rs) throws SQLException {
         return new Patient(

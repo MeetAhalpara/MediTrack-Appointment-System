@@ -36,9 +36,8 @@ public class AppointmentDAO {
             JOIN patients p ON a.patient_id = p.patient_id
             """;
 
-    // -------------------------------------------------------------------------
+
     // Create
-    // -------------------------------------------------------------------------
 
     /**
      * Inserts a new appointment.
@@ -71,9 +70,8 @@ public class AppointmentDAO {
         throw new SQLException("Insert appointment failed — no generated key returned.");
     }
 
-    // -------------------------------------------------------------------------
+
     // Read
-    // -------------------------------------------------------------------------
 
     /** Returns all appointments ordered by date then time. */
     /** Returns all appointments ordered by appointment_id (insertion order). */
@@ -140,9 +138,8 @@ public class AppointmentDAO {
         }
     }
 
-    // -------------------------------------------------------------------------
     // Update
-    // -------------------------------------------------------------------------
+
 
     /** Updates an existing appointment record. */
     public void update(Appointment appt) throws SQLException {
@@ -163,9 +160,8 @@ public class AppointmentDAO {
         }
     }
 
-    // -------------------------------------------------------------------------
+
     // Delete
-    // -------------------------------------------------------------------------
 
     /** Deletes an appointment by its ID. */
     public void delete(int appointmentId) throws SQLException {
@@ -176,9 +172,7 @@ public class AppointmentDAO {
         }
     }
 
-    // -------------------------------------------------------------------------
     // Private helpers
-    // -------------------------------------------------------------------------
 
     private List<Appointment> query(String sql) throws SQLException {
         List<Appointment> list = new ArrayList<>();

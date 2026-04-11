@@ -8,7 +8,8 @@ import java.sql.Statement;
 public class DatabaseConnection {
 
     private static Connection connection;
-    private static final String URL = "jdbc:sqlite:appointments.db";
+    private static final String URL =
+            "jdbc:sqlite:" + System.getProperty("user.home") + "/appointments.db";
 
     public static Connection getInstance() throws SQLException {
         if (connection == null || connection.isClosed()) {
@@ -17,7 +18,7 @@ public class DatabaseConnection {
         return connection;
     }
 
-    // ✅ NEW: Auto-create tables
+
     public static void initializeDatabase() {
 
         String patientsTable = """
@@ -47,10 +48,10 @@ public class DatabaseConnection {
             stmt.execute(patientsTable);
             stmt.execute(appointmentsTable);
 
-            System.out.println("✅ Database initialized successfully");
+            System.out.println("Database initialized successfully");
 
         } catch (Exception e) {
-            System.out.println("❌ Database initialization failed");
+            System.out.println("Database initialization failed");
             e.printStackTrace();
         }
     }

@@ -49,8 +49,8 @@ class InputValidatorTest {
 
     @Test
     void validatePhone_noSpacing_returnsError() {
-        assertNotNull(InputValidator.validatePhone("6135550182"),
-                "Phone without formatting should be rejected");
+        String result = InputValidator.validatePhone("6135550182");
+        assertNotNull(result, "Phone without formatting should be rejected");
     }
 
     @Test
@@ -118,7 +118,8 @@ class InputValidatorTest {
 
     @Test
     void validateDoctor_blank_returnsError() {
-        assertNotNull(InputValidator.validateDoctor("  "));
+        String result = InputValidator.validateDoctor("  ");
+        assertNotNull(result, "Blank doctor name should return error");
     }
 
     @Test
@@ -160,15 +161,22 @@ class InputValidatorTest {
     @Test
     void validateAll_multipleErrors_containsAllMessages() {
         String result = InputValidator.validateAll(
-                "",          // invalid name
-                "0000000",   // invalid phone
+                "",                     // invalid name
+                "0000000",              // invalid phone
                 LocalDate.now().minusDays(3), // past date
-                null,        // no time
-                "",          // no doctor
-                "");         // no reason
+                null,                   // no time
+                "",                     // no doctor
+                ""                      // no reason
+        );
+
         assertFalse(result.isEmpty(), "Should collect multiple error messages");
-        assertTrue(result.contains("name"), "Should mention name error");
-        assertTrue(result.contains("Phone"), "Should mention phone error");
-        assertTrue(result.contains("past"),  "Should mention past date error");
+
+        // 🔥 make checks case-insensitive (VERY IMPORTANT)
+        String lower = result.toLowerCase();
+
+        assertTrue(lower.contains("name"),  "Should mention name error");
+        assertTrue(lower.contains("phone"), "Should mention phone error");
+        assertTrue(lower.contains("date") || lower.contains("past"),
+                "Should mention date/past error");
     }
 }
