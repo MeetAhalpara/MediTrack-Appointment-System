@@ -369,7 +369,6 @@ public class MainController {
         setupNavButtonAnimation(btnEdit, underlineEdit);
         setupNavButtonAnimation(btnDelete, underlineDelete);
         setupNavButtonAnimation(btnDetails, underlineDetails);
-        setupNavButtonAnimation(btnExit, underlineExit);
     }
 
     private void setupNavButtonAnimation(Button button, Region underline) {
@@ -464,3 +463,4 @@ public class MainController {
         alert.showAndWait();
     }
 }
+
