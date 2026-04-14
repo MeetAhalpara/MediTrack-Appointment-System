@@ -31,6 +31,12 @@ public class DatabaseConnection {
 
     public static Connection getInstance() throws SQLException {
         if (connection == null || connection.isClosed()) {
+            try {
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException e) {
+                throw new SQLException("SQLite JDBC driver not found", e);
+            }
+
             connection = DriverManager.getConnection(url);
 
             // Enable foreign key support for SQLite

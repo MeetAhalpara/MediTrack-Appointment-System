@@ -110,7 +110,7 @@ public class MainController {
         resetHamburgerIcon();
         setupNavHoverAnimations();
 
-        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 
         searchField.textProperty().addListener((obs, oldVal, newVal) -> applySearch(newVal));
 
