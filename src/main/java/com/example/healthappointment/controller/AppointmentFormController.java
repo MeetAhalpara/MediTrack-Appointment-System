@@ -38,6 +38,15 @@ public class AppointmentFormController {
     @FXML private TextField fieldReason;
     @FXML private ComboBox<String> fieldStatus;
 
+    // ---- Accessibility labels ----------------------------------------------
+    @FXML private Label lblName;
+    @FXML private Label lblPhone;
+    @FXML private Label lblDate;
+    @FXML private Label lblTime;
+    @FXML private Label lblDoctor;
+    @FXML private Label lblReason;
+    @FXML private Label lblStatus;
+
     // ---- Error labels -------------------------------------------------------
     @FXML private Label lblErrName;
     @FXML private Label lblErrPhone;
@@ -46,8 +55,11 @@ public class AppointmentFormController {
     @FXML private Label lblErrDoctor;
     @FXML private Label lblErrReason;
 
+    // ---- Other UI controls --------------------------------------------------
     @FXML private Label lblTitle;
     @FXML private VBox root;
+    @FXML private Button saveButton;
+    @FXML private Button cancelButton;
 
     // ---- State --------------------------------------------------------------
     private Appointment editTarget;
@@ -76,13 +88,11 @@ public class AppointmentFormController {
 
         clearErrors();
 
-        // 🔥 Auto phone formatter
         applyPhoneFormatter();
-
         setupDatePickerConstraints();
         setupEnterNavigation();
+        setupAccessibility();
 
-        // Inline validation
         fieldName.focusedProperty().addListener(
                 (obs, oldV, newV) -> { if (!newV) validateNameInline(); });
 
@@ -106,7 +116,92 @@ public class AppointmentFormController {
     }
 
     // -------------------------------------------------------------------------
-    // 🔥 PHONE FORMATTER (MAIN FEATURE)
+    // ACCESSIBILITY
+    // -------------------------------------------------------------------------
+    private void setupAccessibility() {
+
+        if (lblName != null) {
+            lblName.setLabelFor(fieldName);
+            lblName.setMnemonicParsing(true);
+        }
+        if (lblPhone != null) {
+            lblPhone.setLabelFor(fieldPhone);
+            lblPhone.setMnemonicParsing(true);
+        }
+        if (lblDate != null) {
+            lblDate.setLabelFor(fieldDate);
+            lblDate.setMnemonicParsing(true);
+        }
+        if (lblTime != null) {
+            lblTime.setLabelFor(fieldTime);
+            lblTime.setMnemonicParsing(true);
+        }
+        if (lblDoctor != null) {
+            lblDoctor.setLabelFor(fieldDoctor);
+            lblDoctor.setMnemonicParsing(true);
+        }
+        if (lblReason != null) {
+            lblReason.setLabelFor(fieldReason);
+            lblReason.setMnemonicParsing(true);
+        }
+        if (lblStatus != null) {
+            lblStatus.setLabelFor(fieldStatus);
+            lblStatus.setMnemonicParsing(true);
+        }
+
+        fieldName.setAccessibleText("Patient name");
+        fieldName.setAccessibleHelp("Enter the full patient name");
+
+        fieldPhone.setAccessibleText("Phone number");
+        fieldPhone.setAccessibleHelp("Enter phone number in format open parenthesis three digits close parenthesis space three digits dash four digits");
+
+        fieldDate.setAccessibleText("Appointment date");
+        fieldDate.setAccessibleHelp("Choose a future appointment date");
+
+        fieldTime.setAccessibleText("Appointment time");
+        fieldTime.setAccessibleHelp("Select an available time slot");
+
+        fieldDoctor.setAccessibleText("Doctor");
+        fieldDoctor.setAccessibleHelp("Select the doctor for the appointment");
+
+        fieldReason.setAccessibleText("Reason for visit");
+        fieldReason.setAccessibleHelp("Enter the reason for the appointment");
+
+        fieldStatus.setAccessibleText("Appointment status");
+        fieldStatus.setAccessibleHelp("Select the appointment status");
+
+        if (saveButton != null) {
+            saveButton.setAccessibleText("Save appointment");
+            saveButton.setAccessibleHelp("Save the appointment and close the form");
+            saveButton.setAccessibleRoleDescription("Save button");
+        }
+
+        if (cancelButton != null) {
+            cancelButton.setAccessibleText("Cancel");
+            cancelButton.setAccessibleHelp("Close the form without saving");
+            cancelButton.setAccessibleRoleDescription("Cancel button");
+        }
+
+        if (lblTitle != null) {
+            lblTitle.setAccessibleText("Appointment form");
+            lblTitle.setAccessibleHelp("Use this form to add or edit an appointment");
+        }
+
+        if (Platform.isAccessibilityActive()) {
+            fieldName.setFocusTraversable(true);
+            fieldPhone.setFocusTraversable(true);
+            fieldDate.setFocusTraversable(true);
+            fieldTime.setFocusTraversable(true);
+            fieldDoctor.setFocusTraversable(true);
+            fieldReason.setFocusTraversable(true);
+            fieldStatus.setFocusTraversable(true);
+            if (saveButton != null) saveButton.setFocusTraversable(true);
+            if (cancelButton != null) cancelButton.setFocusTraversable(true);
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // PHONE FORMATTER
     // -------------------------------------------------------------------------
     private void applyPhoneFormatter() {
 
@@ -114,10 +209,8 @@ public class AppointmentFormController {
 
             if (newValue == null) return;
 
-            // Remove non-digits
             String digits = newValue.replaceAll("\\D", "");
 
-            // Limit to 10 digits
             if (digits.length() > 10) {
                 digits = digits.substring(0, 10);
             }
@@ -131,7 +224,6 @@ public class AppointmentFormController {
                 formatted = "(" + digits.substring(0, 3) + ") " + digits.substring(3, 6) + "-" + digits.substring(6);
             }
 
-            // Prevent loop
             if (!formatted.equals(newValue)) {
                 fieldPhone.setText(formatted);
                 fieldPhone.positionCaret(formatted.length());
@@ -232,6 +324,20 @@ public class AppointmentFormController {
         if (!errors.isEmpty()) {
             showInlineErrors(name, phone, date, time, doctor, reason);
 
+            if (InputValidator.validateName(name) != null) {
+                fieldName.requestFocus();
+            } else if (InputValidator.validatePhone(phone) != null) {
+                fieldPhone.requestFocus();
+            } else if (InputValidator.validateDate(date) != null) {
+                fieldDate.requestFocus();
+            } else if (InputValidator.validateTime(time) != null) {
+                fieldTime.requestFocus();
+            } else if (InputValidator.validateDoctor(doctor) != null) {
+                fieldDoctor.requestFocus();
+            } else if (InputValidator.validateReason(reason) != null) {
+                fieldReason.requestFocus();
+            }
+
             showValidationError(errors);
             return;
         }
@@ -293,18 +399,21 @@ public class AppointmentFormController {
         String error = InputValidator.validateName(fieldName.getText());
         lblErrName.setText(orEmpty(error));
         setErrorState(fieldName, error != null);
+        fieldName.setAccessibleHelp(error != null ? "Error. " + error : "Enter the full patient name");
     }
 
     private void validatePhoneInline() {
         String error = InputValidator.validatePhone(fieldPhone.getText());
         lblErrPhone.setText(orEmpty(error));
         setErrorState(fieldPhone, error != null);
+        fieldPhone.setAccessibleHelp(error != null ? "Error. " + error : "Enter phone number in required format");
     }
 
     private void validateDateInline() {
         String error = InputValidator.validateDate(fieldDate.getValue());
         lblErrDate.setText(orEmpty(error));
         setErrorState(fieldDate, error != null);
+        fieldDate.setAccessibleHelp(error != null ? "Error. " + error : "Choose a future appointment date");
     }
 
     private void showInlineErrors(String name, String phone, LocalDate date,
@@ -329,6 +438,13 @@ public class AppointmentFormController {
         setErrorState(fieldTime, timeError != null);
         setErrorState(fieldDoctor, doctorError != null);
         setErrorState(fieldReason, reasonError != null);
+
+        fieldName.setAccessibleHelp(nameError != null ? "Error. " + nameError : "Enter the full patient name");
+        fieldPhone.setAccessibleHelp(phoneError != null ? "Error. " + phoneError : "Enter phone number in required format");
+        fieldDate.setAccessibleHelp(dateError != null ? "Error. " + dateError : "Choose a future appointment date");
+        fieldTime.setAccessibleHelp(timeError != null ? "Error. " + timeError : "Select an available time slot");
+        fieldDoctor.setAccessibleHelp(doctorError != null ? "Error. " + doctorError : "Select the doctor for the appointment");
+        fieldReason.setAccessibleHelp(reasonError != null ? "Error. " + reasonError : "Enter the reason for the appointment");
     }
 
     private void clearErrors() {
@@ -373,6 +489,12 @@ public class AppointmentFormController {
         subtitle.getStyleClass().add("validation-subtitle");
         subtitle.setWrapText(true);
 
+        Label srSummary = new Label("Validation error dialog. Review the list of missing or invalid fields.");
+        srSummary.setVisible(false);
+        srSummary.setManaged(false);
+        srSummary.setAccessibleText("Validation error dialog. Review the list of missing or invalid fields.");
+        srSummary.setAccessibleHelp("Press OK after reviewing the errors.");
+
         VBox listBox = new VBox(6);
         listBox.getStyleClass().add("validation-list");
 
@@ -388,10 +510,11 @@ public class AppointmentFormController {
             Label item = new Label("• " + text);
             item.setWrapText(true);
             item.getStyleClass().add("validation-item");
+            item.setAccessibleText(text);
             listBox.getChildren().add(item);
         }
 
-        VBox content = new VBox(10, title, subtitle, listBox);
+        VBox content = new VBox(10, srSummary, title, subtitle, listBox);
         content.getStyleClass().add("validation-dialog-content");
 
         dialog.getDialogPane().setContent(content);
@@ -404,6 +527,8 @@ public class AppointmentFormController {
 
         DialogPane pane = dialog.getDialogPane();
         pane.setGraphic(null);
+        pane.setAccessibleText("Validation error dialog");
+        pane.setAccessibleHelp("This dialog shows the fields that must be corrected before saving.");
         if (!pane.getStyleClass().contains("app-dialog")) {
             pane.getStyleClass().add("app-dialog");
         }

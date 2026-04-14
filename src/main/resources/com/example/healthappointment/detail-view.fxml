@@ -1,53 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="root" xmlns:fx="http://javafx.com/fxml"
+<VBox fx:id="root"
+      xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.healthappointment.controller.DetailController"
       stylesheets="@styles.css"
-    styleClass="popup-root"
-      spacing="12">
+      styleClass="popup-root"
+      spacing="12"
+      accessibleText="Appointment details screen"
+      accessibleHelp="Displays the full details of the selected appointment">
 
-    <padding><Insets top="20" left="20" right="20"/></padding>
+    <padding>
+        <Insets top="20" left="20" right="20"/>
+    </padding>
 
-    <Label text="Appointment Details" styleClass="form-title"/>
+    <Label fx:id="lblTitle"
+           text="Appointment Details"
+           styleClass="form-title"
+           accessibleText="Appointment details"
+           accessibleHelp="This screen shows a read only summary of the selected appointment"/>
 
     <GridPane hgap="15" vgap="12">
         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="60.0" prefWidth="80.0" />
-            <ColumnConstraints hgrow="ALWAYS" minWidth="200.0" prefWidth="250.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="60.0" prefWidth="80.0"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200.0" prefWidth="250.0"/>
         </columnConstraints>
 
-        <Label text="ID" styleClass="form-label"/>
-        <Label fx:id="lblAppointmentId" GridPane.columnIndex="1"/>
+        <Label fx:id="lblIdCaption"
+               text="ID"
+               styleClass="form-label"
+               accessibleText="Appointment ID label"/>
+        <Label fx:id="lblAppointmentId"
+               GridPane.columnIndex="1"
+               accessibleText="Appointment ID value"/>
 
-        <Label text="Name" GridPane.rowIndex="1" styleClass="form-label"/>
-        <Label fx:id="lblPatientName" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <Label fx:id="lblNameCaption"
+               text="Name"
+               GridPane.rowIndex="1"
+               styleClass="form-label"
+               accessibleText="Patient name label"/>
+        <Label fx:id="lblPatientName"
+               GridPane.columnIndex="1"
+               GridPane.rowIndex="1"
+               accessibleText="Patient name value"/>
 
-        <Label text="Phone" GridPane.rowIndex="2" styleClass="form-label"/>
-        <Label fx:id="lblPhone" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <Label fx:id="lblPhoneCaption"
+               text="Phone"
+               GridPane.rowIndex="2"
+               styleClass="form-label"
+               accessibleText="Phone number label"/>
+        <Label fx:id="lblPhone"
+               GridPane.columnIndex="1"
+               GridPane.rowIndex="2"
+               accessibleText="Phone number value"/>
 
-        <Label text="Date" GridPane.rowIndex="3" styleClass="form-label"/>
-        <Label fx:id="lblDate" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+        <Label fx:id="lblDateCaption"
+               text="Date"
+               GridPane.rowIndex="3"
+               styleClass="form-label"
+               accessibleText="Appointment date label"/>
+        <Label fx:id="lblDate"
+               GridPane.columnIndex="1"
+               GridPane.rowIndex="3"
+               accessibleText="Appointment date value"/>
 
-        <Label text="Time" GridPane.rowIndex="4" styleClass="form-label"/>
-        <Label fx:id="lblTime" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+        <Label fx:id="lblTimeCaption"
+               text="Time"
+               GridPane.rowIndex="4"
+               styleClass="form-label"
+               accessibleText="Appointment time label"/>
+        <Label fx:id="lblTime"
+               GridPane.columnIndex="1"
+               GridPane.rowIndex="4"
+               accessibleText="Appointment time value"/>
 
-        <Label text="Doctor" GridPane.rowIndex="5" styleClass="form-label"/>
-        <Label fx:id="lblDoctor" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+        <Label fx:id="lblDoctorCaption"
+               text="Doctor"
+               GridPane.rowIndex="5"
+               styleClass="form-label"
+               accessibleText="Doctor label"/>
+        <Label fx:id="lblDoctor"
+               GridPane.columnIndex="1"
+               GridPane.rowIndex="5"
+               accessibleText="Doctor value"/>
 
-        <Label text="Reason" GridPane.rowIndex="6" styleClass="form-label"/>
-        <Label fx:id="lblReason" GridPane.columnIndex="1" GridPane.rowIndex="6" wrapText="true"/>
+        <Label fx:id="lblReasonCaption"
+               text="Reason"
+               GridPane.rowIndex="6"
+               styleClass="form-label"
+               accessibleText="Reason label"/>
+        <Label fx:id="lblReason"
+               GridPane.columnIndex="1"
+               GridPane.rowIndex="6"
+               wrapText="true"
+               accessibleText="Reason value"/>
 
-        <Label text="Status" GridPane.rowIndex="7" styleClass="form-label"/>
-        <Label fx:id="lblStatus" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+        <Label fx:id="lblStatusCaption"
+               text="Status"
+               GridPane.rowIndex="7"
+               styleClass="form-label"
+               accessibleText="Status label"/>
+        <Label fx:id="lblStatus"
+               GridPane.columnIndex="1"
+               GridPane.rowIndex="7"
+               accessibleText="Status value"/>
 
     </GridPane>
 
     <HBox alignment="CENTER" styleClass="popup-form-actions">
-        <Button text="Close" onAction="#handleClose"/>
+        <Button fx:id="btnClose"
+                id="closeButton"
+                text="Close"
+                onAction="#handleClose"
+                accessibleText="Close window"
+                accessibleHelp="Close the appointment details screen"/>
     </HBox>
 
 </VBox>

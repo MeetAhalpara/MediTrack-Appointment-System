@@ -20,6 +20,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.VBox;
@@ -53,7 +54,9 @@ public class MainController {
     @FXML private DatePicker filterDate;
     @FXML private ComboBox<String> filterStatus;
 
-    // Sidebar container toggled by hamburger button.
+    // -------------------------------------------------------------------------
+    // SIDEBAR / NAV
+    // -------------------------------------------------------------------------
     @FXML private VBox sidebar;
     @FXML private Button hamburgerButton;
     @FXML private Region lineTop;
@@ -75,16 +78,19 @@ public class MainController {
     // -------------------------------------------------------------------------
     private final AppointmentDAO appointmentDAO = new AppointmentDAO();
     private final PatientDAO patientDAO = new PatientDAO();
+
     private static final double SIDEBAR_WIDTH = 220;
     private static final Duration SIDEBAR_OPEN_DURATION = Duration.millis(300);
     private static final Duration SIDEBAR_CLOSE_DURATION = Duration.millis(240);
-    private static final Interpolator SIDEBAR_OPEN_EASING = Interpolator.SPLINE(0.22, 1.0, 0.36, 1.0);
-    private static final Interpolator SIDEBAR_CLOSE_EASING = Interpolator.SPLINE(0.4, 0.0, 1.0, 1.0);
+    private static final Interpolator SIDEBAR_OPEN_EASING =
+            Interpolator.SPLINE(0.22, 1.0, 0.36, 1.0);
+    private static final Interpolator SIDEBAR_CLOSE_EASING =
+            Interpolator.SPLINE(0.4, 0.0, 1.0, 1.0);
 
     private boolean sidebarOpen;
     private Timeline sidebarTimeline;
 
-    private ObservableList<Appointment> masterList = FXCollections.observableArrayList();
+    private final ObservableList<Appointment> masterList = FXCollections.observableArrayList();
 
     // -------------------------------------------------------------------------
     // INIT
@@ -107,6 +113,93 @@ public class MainController {
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         searchField.textProperty().addListener((obs, oldVal, newVal) -> applySearch(newVal));
+
+        // Accessibility + keyboard support
+        setupAccessibility();
+
+        searchField.setOnAction(e -> handleFilter());
+        filterStatus.setOnAction(e -> handleFilter());
+
+        tableView.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                handleViewDetails();
+            }
+        });
+    }
+
+    // -------------------------------------------------------------------------
+    // ACCESSIBILITY
+    // -------------------------------------------------------------------------
+    private void setupAccessibility() {
+
+        // TABLE
+        tableView.setAccessibleText("Appointments table");
+        tableView.setAccessibleHelp("Displays the list of appointments. Use arrow keys to move through rows.");
+
+        colId.setText("Number");
+        colPatientName.setText("Patient Name");
+        colPhone.setText("Phone Number");
+        colDate.setText("Date");
+        colTime.setText("Time");
+        colDoctor.setText("Doctor");
+        colReason.setText("Reason");
+        colStatus.setText("Status");
+
+        // SEARCH + FILTERS
+        searchField.setAccessibleText("Search appointments");
+        searchField.setAccessibleHelp("Type to search appointments by patient name or doctor.");
+
+        filterDate.setAccessibleText("Filter by date");
+        filterDate.setAccessibleHelp("Choose a date to filter appointments.");
+
+        filterStatus.setAccessibleText("Filter by status");
+        filterStatus.setAccessibleHelp("Select a status to filter appointments.");
+
+        // BUTTONS
+        btnAdd.setAccessibleText("Add appointment");
+        btnAdd.setAccessibleHelp("Open form to create a new appointment.");
+
+        btnEdit.setAccessibleText("Edit appointment");
+        btnEdit.setAccessibleHelp("Edit the currently selected appointment.");
+
+        btnDelete.setAccessibleText("Delete appointment");
+        btnDelete.setAccessibleHelp("Delete the currently selected appointment.");
+
+        btnDetails.setAccessibleText("View appointment details");
+        btnDetails.setAccessibleHelp("Open the details view for the selected appointment.");
+
+        if (btnExit != null) {
+            btnExit.setAccessibleText("Exit application");
+            btnExit.setAccessibleHelp("Close the application.");
+        }
+
+        hamburgerButton.setAccessibleText("Toggle navigation menu");
+        hamburgerButton.setAccessibleHelp("Open or close the sidebar navigation menu.");
+
+        // FOCUS / KEYBOARD
+        tableView.setFocusTraversable(true);
+        searchField.setFocusTraversable(true);
+        filterDate.setFocusTraversable(true);
+        filterStatus.setFocusTraversable(true);
+        btnAdd.setFocusTraversable(true);
+        btnEdit.setFocusTraversable(true);
+        btnDelete.setFocusTraversable(true);
+        btnDetails.setFocusTraversable(true);
+        if (btnExit != null) {
+            btnExit.setFocusTraversable(true);
+        }
+        hamburgerButton.setFocusTraversable(true);
+
+        // TABLE SELECTION FEEDBACK
+        tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                tableView.setAccessibleHelp(
+                        "Selected appointment for " + newVal.getPatientName() +
+                                " on " + newVal.getDate() +
+                                " at " + newVal.getTime()
+                );
+            }
+        });
     }
 
     // -------------------------------------------------------------------------
@@ -246,6 +339,11 @@ public class MainController {
 
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setHeaderText("Delete appointment?");
+        confirm.setContentText("Confirm whether you want to delete the selected appointment.");
+
+        confirm.getDialogPane().setAccessibleText("Confirmation dialog");
+        confirm.getDialogPane().setAccessibleHelp("Confirm whether you want to delete the selected appointment.");
+
         confirm.showAndWait().ifPresent(btn -> {
             if (btn == ButtonType.OK) {
                 try {
@@ -369,6 +467,9 @@ public class MainController {
         setupNavButtonAnimation(btnEdit, underlineEdit);
         setupNavButtonAnimation(btnDelete, underlineDelete);
         setupNavButtonAnimation(btnDetails, underlineDetails);
+        if (btnExit != null && underlineExit != null) {
+            setupNavButtonAnimation(btnExit, underlineExit);
+        }
     }
 
     private void setupNavButtonAnimation(Button button, Region underline) {
@@ -453,6 +554,8 @@ public class MainController {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setHeaderText(header);
         alert.setContentText(content);
+        alert.getDialogPane().setAccessibleText("Error dialog");
+        alert.getDialogPane().setAccessibleHelp(content);
         alert.showAndWait();
     }
 
@@ -460,7 +563,8 @@ public class MainController {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setHeaderText(header);
         alert.setContentText(content);
+        alert.getDialogPane().setAccessibleText("Warning dialog");
+        alert.getDialogPane().setAccessibleHelp(content);
         alert.showAndWait();
     }
 }
-

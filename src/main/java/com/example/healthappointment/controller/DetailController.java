@@ -11,8 +11,7 @@ import javafx.stage.Stage;
 /**
  * DetailController — read-only Appointment Details screen.
  *
- * Maps to Use Case 6 (View Appointment Details) and Screen 3 in the
- * proposal (Section 3 / Section 4 UC6).
+ * Accessibility enhanced version
  */
 public class DetailController {
 
@@ -29,20 +28,44 @@ public class DetailController {
 
     @FXML
     public void initialize() {
+
+        // Apply animations (existing)
         root.sceneProperty().addListener((obs, oldScene, newScene) -> {
-            if (newScene == null) {
-                return;
-            }
+            if (newScene == null) return;
             Platform.runLater(() -> GlassButtonAnimator.applyToButtons(root));
         });
         Platform.runLater(() -> GlassButtonAnimator.applyToButtons(root));
+
+        // Accessibility setup
+        setupAccessibility();
+    }
+
+    // -------------------------------------------------------------------------
+    // ACCESSIBILITY SETUP
+    // -------------------------------------------------------------------------
+    private void setupAccessibility() {
+
+        root.setAccessibleText("Appointment details screen");
+        root.setAccessibleHelp("Displays detailed information about a selected appointment");
+
+        lblAppointmentId.setAccessibleText("Appointment ID");
+        lblPatientName.setAccessibleText("Patient name");
+        lblPhone.setAccessibleText("Phone number");
+        lblDate.setAccessibleText("Appointment date");
+        lblTime.setAccessibleText("Appointment time");
+        lblDoctor.setAccessibleText("Doctor name");
+        lblReason.setAccessibleText("Reason for appointment");
+        lblStatus.setAccessibleText("Appointment status");
+
+        // Ensure focusable for keyboard users
+        root.setFocusTraversable(true);
     }
 
     /**
      * Populates the view with data from the given appointment.
-     * Called by MainController immediately after loading the FXML.
      */
     public void setAppointment(Appointment appt) {
+
         lblAppointmentId.setText(String.valueOf(appt.getAppointmentId()));
         lblPatientName.setText(appt.getPatientName());
         lblPhone.setText(appt.getPhone());
@@ -51,8 +74,18 @@ public class DetailController {
         lblDoctor.setText(appt.getDoctor());
         lblReason.setText(appt.getReason());
         lblStatus.setText(appt.getStatus());
+
+        //  Important: announce content for screen readers
+        root.setAccessibleHelp(
+                "Viewing appointment for " + appt.getPatientName() +
+                        " on " + appt.getDate() +
+                        " at " + appt.getTime()
+        );
     }
 
+    // -------------------------------------------------------------------------
+    // CLOSE
+    // -------------------------------------------------------------------------
     @FXML
     private void handleClose() {
         ((Stage) lblPatientName.getScene().getWindow()).close();
