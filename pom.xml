@@ -12,38 +12,40 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.12.1</junit.version>
+        <javafx.version>21.0.6</javafx.version>
+        <testfx.version>4.0.18</testfx.version>
     </properties>
 
     <dependencies>
 
-        <!-- JavaFX matching your existing 21.0.6 versions -->
+        <!-- JavaFX -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>21.0.6</version>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>21.0.6</version>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-web</artifactId>
-            <version>21.0.6</version>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-swing</artifactId>
-            <version>21.0.6</version>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-media</artifactId>
-            <version>21.0.6</version>
+            <version>${javafx.version}</version>
         </dependency>
 
-        <!-- UI libraries from your original pom -->
+        <!-- UI libraries -->
         <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
@@ -54,7 +56,10 @@
             <artifactId>formsfx-core</artifactId>
             <version>11.6.0</version>
             <exclusions>
-                <exclusion><groupId>org.openjfx</groupId><artifactId>*</artifactId></exclusion>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -62,7 +67,10 @@
             <artifactId>validatorfx</artifactId>
             <version>0.6.1</version>
             <exclusions>
-                <exclusion><groupId>org.openjfx</groupId><artifactId>*</artifactId></exclusion>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -80,7 +88,10 @@
             <artifactId>tilesfx</artifactId>
             <version>21.0.9</version>
             <exclusions>
-                <exclusion><groupId>org.openjfx</groupId><artifactId>*</artifactId></exclusion>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -88,18 +99,38 @@
             <artifactId>fxgl</artifactId>
             <version>17.3</version>
             <exclusions>
-                <exclusion><groupId>org.openjfx</groupId><artifactId>*</artifactId></exclusion>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
-        <!-- SQLite JDBC - added for database integration -->
+        <!-- SQLite -->
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.45.3.0</version>
         </dependency>
 
-        <!-- JUnit 5 - kept at your version -->
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+
+        <!-- JUnit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -112,21 +143,27 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- TestFX -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.36</version>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-core</artifactId>
+            <version>${testfx.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-junit5</artifactId>
+            <version>${testfx.version}</version>
+            <scope>test</scope>
         </dependency>
 
+        <!-- Optional: helps for some JavaFX test environments -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.36</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jul-to-slf4j</artifactId>
-            <version>1.7.36</version>
+            <groupId>org.testfx</groupId>
+            <artifactId>openjfx-monocle</artifactId>
+            <version>21.0.2</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -134,7 +171,7 @@
     <build>
         <plugins>
 
-            <!-- Compiler: changed from 25 to 21 to match JavaFX 21.0.6 -->
+            <!-- Java compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -145,7 +182,7 @@
                 </configuration>
             </plugin>
 
-            <!-- JavaFX: mvn clean javafx:run -->
+            <!-- JavaFX plugin -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -154,7 +191,6 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <!-- Fixed: was pointing to wrong module/class -->
                             <mainClass>com.example.healthappointment/com.example.healthappointment.Main</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
@@ -167,7 +203,7 @@
                 </executions>
             </plugin>
 
-            <!-- Surefire: mvn test -->
+            <!-- Test runner -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -176,6 +212,12 @@
                     <includes>
                         <include>**/*Test.java</include>
                     </includes>
+                    <argLine>
+                        --add-opens com.example.healthappointment/com.example.healthappointment=ALL-UNNAMED
+                        --add-opens javafx.graphics/javafx.scene=ALL-UNNAMED
+                        --add-opens javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
+                        --add-opens javafx.controls/javafx.scene.control=ALL-UNNAMED
+                    </argLine>
                 </configuration>
             </plugin>
 

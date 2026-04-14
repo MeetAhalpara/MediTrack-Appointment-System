@@ -10,4 +10,6 @@ module com.example.healthappointment {
     opens com.example.healthappointment.util to javafx.fxml;
 
     exports com.example.healthappointment;
+    exports com.example.healthappointment.controller;
+    exports com.example.healthappointment.model;
 }
